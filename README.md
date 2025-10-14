@@ -27,7 +27,7 @@ VeeSeven provides a lightweight implementation that works seamlessly with Java's
 ### Java
 
 ```java
-import com.block.veeseven.UuidV7;
+import xyz.block.veeseven.UuidV7;
 import java.util.UUID;
 
 // Generate a UUID v7
@@ -43,6 +43,9 @@ UUID testUuid = UuidV7.generate(() -> 1234567890000L);
 ### Kotlin
 
 ```kotlin
+import xyz.block.veeseven.UuidV7
+import xyz.block.veeseven.timestamp
+
 // Generate a UUID v7
 val uuid = UuidV7.generate()
 
