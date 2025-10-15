@@ -16,16 +16,17 @@ import java.util.function.LongSupplier;
  * Monotonic methods use a synchronized counter to ensure strict ordering within the same millisecond.
  */
 public final class UuidV7 {
-    // Thread-safe random source for initial counter values in monotonic mode
-    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-
-    // Monotonicity state (guarded by class lock in monotonic methods)
-    private static long lastTimestamp = 0L;
-    private static int counter = 0;
 
     // Counter occupies 12 bits (rand_a in RFC 9562)
     private static final int COUNTER_BITS = 12;
     private static final int COUNTER_MAX = (1 << COUNTER_BITS) - 1; // 0xFFF
+
+    // Thread-safe random source for initial counter values in monotonic mode
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
+    // Monotonicity state (guarded by class lock in monotonic methods)
+    private static long monotonicGeneratorLastTimestamp = 0L;
+    private static int monotonicGeneratorCounter = 0;
 
     private UuidV7() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
@@ -114,25 +115,25 @@ public final class UuidV7 {
         long timestamp = clock.getAsLong();
         int counterValue;
 
-        if (timestamp == lastTimestamp) {
+        if (timestamp == monotonicGeneratorLastTimestamp) {
             // Same millisecond - increment counter
-            counter = (counter + 1) & COUNTER_MAX;
+            monotonicGeneratorCounter = (monotonicGeneratorCounter + 1) & COUNTER_MAX;
 
-            if (counter == 0) {
+            if (monotonicGeneratorCounter == 0) {
                 // Counter overflow - wait for next millisecond to maintain uniqueness
                 do {
                     timestamp = clock.getAsLong();
-                } while (timestamp == lastTimestamp);
+                } while (timestamp == monotonicGeneratorLastTimestamp);
 
                 // New millisecond - start with random counter value
-                counter = SECURE_RANDOM.nextInt(COUNTER_MAX + 1);
+                monotonicGeneratorCounter = SECURE_RANDOM.nextInt(COUNTER_MAX + 1);
             }
-            counterValue = counter;
+            counterValue = monotonicGeneratorCounter;
         } else {
             // New millisecond - start with random counter value for unpredictability
-            counter = SECURE_RANDOM.nextInt(COUNTER_MAX + 1);
-            counterValue = counter;
-            lastTimestamp = timestamp;
+            monotonicGeneratorCounter = SECURE_RANDOM.nextInt(COUNTER_MAX + 1);
+            counterValue = monotonicGeneratorCounter;
+            monotonicGeneratorLastTimestamp = timestamp;
         }
 
         // Generate random bytes for the least significant bits (rand_b)
