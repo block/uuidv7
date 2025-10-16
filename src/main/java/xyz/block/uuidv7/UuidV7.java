@@ -1,4 +1,4 @@
-package xyz.block.veeseven;
+package xyz.block.uuidv7;
 
 import java.security.SecureRandom;
 import java.util.UUID;

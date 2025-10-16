@@ -1,4 +1,4 @@
-# Contributing to VeeSeven
+# Contributing to UUIDv7
 
 ## Prerequisites
 
@@ -22,14 +22,14 @@
 ```
 src/
   main/
-    java/xyz/block/veeseven/
+    java/xyz/block/uuidv7/
       UuidV7.java              # Core implementation
-    kotlin/xyz/block/veeseven/
+    kotlin/xyz/block/uuidv7/
       UuidV7Extensions.kt      # Kotlin extensions
   test/
-    java/xyz/block/veeseven/
+    java/xyz/block/uuidv7/
       UuidV7Test.java          # Java tests
-    kotlin/xyz/block/veeseven/
+    kotlin/xyz/block/uuidv7/
       UuidV7ExtensionsTest.kt  # Kotlin tests
 ```
 

@@ -1,4 +1,4 @@
-package xyz.block.veeseven
+package xyz.block.uuidv7
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

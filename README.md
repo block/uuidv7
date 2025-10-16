@@ -1,4 +1,4 @@
-# VeeSeven
+# UUIDv7
 
 A minimal, high-performance UUID v7 implementation for Java with excellent Kotlin bindings.
 
@@ -20,7 +20,7 @@ VeeSeven provides a lightweight implementation that works seamlessly with Java's
 - **`generate()` - Non-Monotonic (default)**: Uses `ThreadLocalRandom` with zero synchronization overhead for maximum performance. UUIDs generated in the same millisecond may not be strictly ordered, but uniqueness is maintained through random bits. Ideal for high-throughput scenarios and distributed systems where cross-server ordering guarantees are impossible.
 - **`generateMonotonic()` - Monotonic ordering**: Uses a synchronized counter to ensure strict ordering within the same millisecond, following RFC 9562 recommendations. Best for database primary keys and scenarios requiring guaranteed sequential ordering.
 
-**Timestamp Extraction**: UUIDs contain timing information, and VeeSeven makes it easy to extract this for debugging, observability, and time-based queries.
+**Timestamp Extraction**: UUIDs contain timing information, and this library makes it easy to extract this for debugging, observability, and time-based queries.
 
 **Flexible Generation**: Static factory for common cases, configurable generators for testing or custom clock sources.
 
@@ -29,7 +29,7 @@ VeeSeven provides a lightweight implementation that works seamlessly with Java's
 ### Java
 
 ```java
-import xyz.block.veeseven.UuidV7;
+import xyz.block.uuidv7.UuidV7;
 import java.util.UUID;
 
 // Generate a UUID v7 (non-monotonic, maximum performance)
@@ -51,8 +51,8 @@ UUID monotonicTestUuid = UuidV7.generateMonotonic(() -> 1234567890000L);
 ### Kotlin
 
 ```kotlin
-import xyz.block.veeseven.UuidV7
-import xyz.block.veeseven.timestamp
+import xyz.block.uuidv7.UuidV7
+import xyz.block.uuidv7.timestamp
 
 // Generate a UUID v7 (non-monotonic, maximum performance)
 val uuid = UuidV7.generate()
@@ -118,7 +118,7 @@ UUID v7 follows RFC 9562:
 
 ### Random Number Generation
 
-VeeSeven uses **`ThreadLocalRandom`** for generating random bits rather than `SecureRandom` for the following reasons:
+This implementation uses **`ThreadLocalRandom`** for generating random bits rather than `SecureRandom` for the following reasons:
 
 - **Performance**: `ThreadLocalRandom` is significantly faster (10-100x) than `SecureRandom` as it avoids contention and doesn't require cryptographic operations
 - **No Synchronization**: Thread-local design eliminates lock contention in multi-threaded environments

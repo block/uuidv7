@@ -1,4 +1,4 @@
-package xyz.block.veeseven;
+package xyz.block.uuidv7;
 
 import org.junit.jupiter.api.Test;
 import java.util.UUID;
