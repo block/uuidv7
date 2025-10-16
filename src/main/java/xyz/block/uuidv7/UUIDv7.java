@@ -64,6 +64,7 @@ public final class UUIDv7 {
      * @return a new UUID v7 instance
      */
     static UUID build(long timestamp, int randA, long randB) {
+        // Defensively mask randA to ensure it fits in 12 bits
         long mostSigBits = (timestamp << 16) | (randA & 0xFFFL);
         long leastSigBits = randB;
 
