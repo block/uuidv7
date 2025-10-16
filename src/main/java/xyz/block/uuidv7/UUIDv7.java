@@ -36,16 +36,7 @@ public final class UUIDv7 {
      * @return a new UUID v7 instance
      */
     public static UUID generate() {
-        long timestamp = System.currentTimeMillis();
-
-        // Use random bits for counter field (rand_a)
-        int counterValue = ThreadLocalRandom.current().nextInt(COUNTER_MAX + 1);
-
-        // Generate random bytes for the least significant bits (rand_b)
-        byte[] randomBytes = new byte[8];
-        ThreadLocalRandom.current().nextBytes(randomBytes);
-
-        return buildUuid(timestamp, counterValue, randomBytes);
+        return buildUuid(System.currentTimeMillis());
     }
 
     /**
@@ -58,8 +49,10 @@ public final class UUIDv7 {
      * @return a new UUID v7 instance
      */
     public static UUID generate(LongSupplier clock) {
-        long timestamp = clock.getAsLong();
+        return buildUuid(clock.getAsLong());
+    }
 
+    private static UUID buildUuid(long timestamp) {
         // Use random bits for counter field (rand_a)
         int counterValue = ThreadLocalRandom.current().nextInt(COUNTER_MAX + 1);
 
