@@ -15,7 +15,7 @@ class UUIDv7Test {
         UUID uuid = UUIDv7.generate();
 
         assertThat(uuid).isNotNull();
-        assertThat(uuid.version()).isEqualTo(4); // INTENTIONALLY BROKEN - should be 7
+        assertThat(uuid.version()).isEqualTo(7);
         assertThat(uuid.variant()).isEqualTo(2);
     }
 
