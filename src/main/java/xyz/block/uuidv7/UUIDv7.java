@@ -18,10 +18,6 @@ import java.util.function.LongSupplier;
  */
 public final class UUIDv7 {
 
-    // Counter occupies 12 bits (rand_a in RFC 9562)
-    static final int COUNTER_BITS = 12;
-    static final int COUNTER_MAX = (1 << COUNTER_BITS) - 1; // 0xFFF
-
     private UUIDv7() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
@@ -36,7 +32,7 @@ public final class UUIDv7 {
      * @return a new UUID v7 instance
      */
     public static UUID generate() {
-        return buildUuid(System.currentTimeMillis());
+        return generate(System::currentTimeMillis);
     }
 
     /**
@@ -49,46 +45,30 @@ public final class UUIDv7 {
      * @return a new UUID v7 instance
      */
     public static UUID generate(LongSupplier clock) {
-        return buildUuid(clock.getAsLong());
-    }
+        long timestamp = clock.getAsLong();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
 
-    private static UUID buildUuid(long timestamp) {
-        // Use random bits for counter field (rand_a)
-        int counterValue = ThreadLocalRandom.current().nextInt(COUNTER_MAX + 1);
+        int randA = (int) (random.nextLong() & 0xFFFL);
+        long randB = random.nextLong();
 
-        // Generate random bytes for the least significant bits (rand_b)
-        byte[] randomBytes = new byte[8];
-        ThreadLocalRandom.current().nextBytes(randomBytes);
-
-        return buildUuid(timestamp, counterValue, randomBytes);
+        return build(timestamp, randA, randB);
     }
 
     /**
-     * Builds a UUID v7 from timestamp, counter, and random bytes.
+     * Builds a UUID v7 from timestamp and random components.
      * Package-private to allow use by {@link MonotonicUUIDv7}.
+     *
+     * @param timestamp the timestamp in milliseconds since Unix epoch
+     * @param randA the random or counter value for bits 52-63 (12 bits)
+     * @param randB the random value for bits 66-127 (62 bits, variant will be set)
+     * @return a new UUID v7 instance
      */
-    static UUID buildUuid(long timestamp, int counterValue, byte[] randomBytes) {
-        // Layout of UUID v7 (RFC 9562):
-        //
-        // Most significant 64 bits:
-        //   48 bits: unix_ts_ms (timestamp in milliseconds)
-        //   4 bits:  ver (version = 7)
-        //   12 bits: rand_a (counter for monotonicity or random)
-        //
-        // Least significant 64 bits:
-        //   2 bits:  var (variant = 10)
-        //   62 bits: rand_b (random data)
-
-        long mostSigBits = (timestamp << 16) | counterValue;
+    static UUID build(long timestamp, int randA, long randB) {
+        long mostSigBits = (timestamp << 16) | (randA & 0xFFFL);
+        long leastSigBits = randB;
 
         // Set version to 7 (0111 in bits 48-51)
         mostSigBits = (mostSigBits & 0xFFFFFFFFFFFF0FFFL) | 0x0000000000007000L;
-
-        // Build least significant bits from random bytes
-        long leastSigBits = 0L;
-        for (int i = 0; i < 8; i++) {
-            leastSigBits = (leastSigBits << 8) | (randomBytes[i] & 0xFFL);
-        }
 
         // Set variant to 10 (RFC 4122) in bits 64-65
         leastSigBits = (leastSigBits & 0x3FFFFFFFFFFFFFFFL) | 0x8000000000000000L;

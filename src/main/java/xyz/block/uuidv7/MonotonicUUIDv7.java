@@ -5,8 +5,6 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.LongSupplier;
 
-import static xyz.block.uuidv7.UUIDv7.COUNTER_MAX;
-
 /**
  * Utility class for generating monotonic UUID v7 identifiers.
  * <p>
@@ -24,7 +22,7 @@ import static xyz.block.uuidv7.UUIDv7.COUNTER_MAX;
  */
 public final class MonotonicUUIDv7 {
 
-    // Thread-safe random source for initial counter values
+    private static final int COUNTER_MAX = 0xFFF; // 12 bits = 4095
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     // Monotonicity state (guarded by class lock in synchronized methods)
@@ -89,10 +87,8 @@ public final class MonotonicUUIDv7 {
             lastTimestamp = timestamp;
         }
 
-        // Generate random bytes for the least significant bits (rand_b)
-        byte[] randomBytes = new byte[8];
-        ThreadLocalRandom.current().nextBytes(randomBytes);
+        long randB = ThreadLocalRandom.current().nextLong();
 
-        return UUIDv7.buildUuid(timestamp, counterValue, randomBytes);
+        return UUIDv7.build(timestamp, counterValue, randB);
     }
 }
