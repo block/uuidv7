@@ -25,7 +25,7 @@ A minimal, high-performance UUID v7 implementation for Java with excellent Kotli
 │   │   │   ├── UUIDv7.java              # High-performance UUID v7 (no ordering guarantees)
 │   │   │   └── MonotonicUUIDv7.java     # Monotonic UUID v7 (strict ordering)
 │   │   └── kotlin/xyz/block/uuidv7/
-│   │       └── UuidV7Extensions.kt      # Kotlin extension property for timestamp
+│   │       └── UUIDv7Extensions.kt      # Kotlin extension property for timestamp
 │   └── test/
 │       ├── java/xyz/block/uuidv7/
 │       │   ├── UUIDv7Test.java          # Tests for UUIDv7
@@ -104,7 +104,7 @@ A minimal, high-performance UUID v7 implementation for Java with excellent Kotli
 - Uses UUIDv7.buildUuid() for actual UUID construction
 - Maintains separate state from UUIDv7 (independent counters)
 
-### UuidV7Extensions.kt (src/main/kotlin/xyz/block/uuidv7/UuidV7Extensions.kt)
+### UUIDv7Extensions.kt (src/main/kotlin/xyz/block/uuidv7/UUIDv7Extensions.kt)
 
 **Purpose**: Kotlin extension property for idiomatic timestamp extraction.
 
@@ -225,7 +225,7 @@ The test suite is comprehensive and covers:
 
 ### Adding Kotlin Extensions
 
-**File**: `src/main/kotlin/xyz/block/uuidv7/UuidV7Extensions.kt`
+**File**: `src/main/kotlin/xyz/block/uuidv7/UUIDv7Extensions.kt`
 
 - Keep extensions minimal and focused
 - Add tests in `UUIDv7ExtensionsTest.kt`
