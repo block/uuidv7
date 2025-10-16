@@ -77,7 +77,7 @@ UUID v7 follows RFC 9562:
 - **Bits 0-47**: Unix timestamp in milliseconds (48 bits)
 - **Bits 48-51**: Version field (0111 for v7)
 - **Bits 52-63**: Counter or random bits (12 bits, called `rand_a`)
-  - **Monotonic mode**: Sequential counter for strict ordering within the same millisecond
+  - **Monotonic mode**: Sequential counter for strict ordering within the same millisecond for values generated on the same node 
   - **Non-monotonic mode**: Random bits for maximum performance
 - **Bits 64-65**: Variant field (10 for RFC 4122)
 - **Bits 66-127**: Random bits (62 bits, called `rand_b`)
@@ -92,7 +92,7 @@ UUID v7 follows RFC 9562:
 
 #### MonotonicUUIDv7 (Sequential Ordering Guaranteed)
 
-**`MonotonicUUIDv7.generate()`**: Generate a new UUID v7 using current system time with monotonic ordering. Uses a synchronized counter to ensure strict ordering within the same millisecond. Returns `java.util.UUID`.
+**`MonotonicUUIDv7.generate()`**: Generate a new UUID v7 using current system time with monotonic ordering. Uses a synchronized counter to ensure strict ordering within the same millisecond for values generated on the same node. Returns `java.util.UUID`.
 
 **`MonotonicUUIDv7.generate(LongSupplier clock)`**: Generate a new UUID v7 with a custom clock source and monotonic ordering. Useful for testing monotonic behavior with controlled clock sources.
 

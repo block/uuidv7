@@ -146,7 +146,7 @@ The test suite is comprehensive and covers:
 
 6. **Time Ordering**:
    - UUIDs from different timestamps sort correctly
-   - Sequential generation maintains order in monotonic mode
+   - Sequential generation maintains order in monotonic mode (local to the current process)
 
 ## Build & Development Commands
 
