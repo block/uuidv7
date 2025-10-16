@@ -1,4 +1,4 @@
-# Contributing to VeeSeven
+# Contributing to UUIDv7
 
 ## Prerequisites
 
@@ -22,15 +22,17 @@
 ```
 src/
   main/
-    java/xyz/block/veeseven/
-      UuidV7.java              # Core implementation
-    kotlin/xyz/block/veeseven/
+    java/xyz/block/uuidv7/
+      UUIDv7.java              # High-performance UUID v7 (no ordering guarantees)
+      MonotonicUUIDv7.java     # Monotonic UUID v7 (strict ordering)
+    kotlin/xyz/block/uuidv7/
       UuidV7Extensions.kt      # Kotlin extensions
   test/
-    java/xyz/block/veeseven/
-      UuidV7Test.java          # Java tests
-    kotlin/xyz/block/veeseven/
-      UuidV7ExtensionsTest.kt  # Kotlin tests
+    java/xyz/block/uuidv7/
+      UUIDv7Test.java          # Tests for UUIDv7
+      MonotonicUUIDv7Test.java # Tests for MonotonicUUIDv7
+    kotlin/xyz/block/uuidv7/
+      UUIDv7ExtensionsTest.kt  # Kotlin tests
 ```
 
 ## Code Style

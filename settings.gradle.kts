@@ -1,1 +1,1 @@
-rootProject.name = "veeseven"
+rootProject.name = "uuidv7"

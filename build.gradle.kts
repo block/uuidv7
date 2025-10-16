@@ -37,9 +37,9 @@ publishing {
             from(components["java"])
             
             pom {
-                name.set("VeeSeven")
+                name.set("UUIDv7")
                 description.set("A minimal UUID v7 implementation for Java with Kotlin bindings")
-                url.set("https://github.com/block/vee-seven")
+                url.set("https://github.com/block/uuidv7")
                 
                 licenses {
                     license {
