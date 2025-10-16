@@ -48,7 +48,7 @@ public final class UUIDv7 {
         long timestamp = clock.getAsLong();
         ThreadLocalRandom random = ThreadLocalRandom.current();
 
-        int randA = (int) (random.nextLong() & 0xFFFL);
+        int randA = random.nextInt(4096);
         long randB = random.nextLong();
 
         return build(timestamp, randA, randB);
