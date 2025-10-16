@@ -9,13 +9,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class UuidV7Test {
+class MonotonicUUIDv7Test {
 
     @Test
     void generateCreatesValidUuid() {
-        UUID uuid = UuidV7.generate();
+        UUID uuid = MonotonicUUIDv7.generate();
 
         assertThat(uuid).isNotNull();
         assertThat(uuid.version()).isEqualTo(7);
@@ -25,48 +24,20 @@ class UuidV7Test {
     @Test
     void generateWithCustomClock() {
         long fixedTime = 1234567890000L;
-        UUID uuid = UuidV7.generateMonotonic(() -> fixedTime);
+        UUID uuid = MonotonicUUIDv7.generate(() -> fixedTime);
 
         assertThat(uuid).isNotNull();
-        assertThat(UuidV7.getTimestamp(uuid)).isEqualTo(fixedTime);
+        assertThat(UUIDv7.getTimestamp(uuid)).isEqualTo(fixedTime);
     }
 
     @Test
     void getTimestampExtractsCorrectValue() {
         long expectedTime = System.currentTimeMillis();
-        UUID uuid = UuidV7.generateMonotonic(() -> expectedTime);
+        UUID uuid = MonotonicUUIDv7.generate(() -> expectedTime);
 
-        long actualTime = UuidV7.getTimestamp(uuid);
+        long actualTime = UUIDv7.getTimestamp(uuid);
 
         assertThat(actualTime).isEqualTo(expectedTime);
-    }
-
-    @Test
-    void getTimestampThrowsOnNull() {
-        assertThatThrownBy(() -> UuidV7.getTimestamp(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("UUID cannot be null");
-    }
-
-    @Test
-    void getTimestampThrowsOnNonV7Uuid() {
-        UUID v4Uuid = UUID.randomUUID();
-
-        assertThatThrownBy(() -> UuidV7.getTimestamp(v4Uuid))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("not version 7");
-    }
-
-    @Test
-    void generatedUuidsAreUnique() {
-        Set<UUID> uuids = new HashSet<>();
-
-        for (int i = 0; i < 10000; i++) {
-            UUID uuid = UuidV7.generate();
-            assertThat(uuids.add(uuid))
-                .as("UUID should be unique")
-                .isTrue();
-        }
     }
 
     @Test
@@ -74,20 +45,12 @@ class UuidV7Test {
         long time1 = 1000000000000L;
         long time2 = 2000000000000L;
 
-        UUID uuid1 = UuidV7.generateMonotonic(() -> time1);
-        UUID uuid2 = UuidV7.generateMonotonic(() -> time2);
+        UUID uuid1 = MonotonicUUIDv7.generate(() -> time1);
+        UUID uuid2 = MonotonicUUIDv7.generate(() -> time2);
 
         assertThat(uuid1.compareTo(uuid2))
             .as("Earlier UUID should sort before later UUID")
             .isLessThan(0);
-    }
-
-    @Test
-    void toStringProducesStandardFormat() {
-        UUID uuid = UuidV7.generate();
-        String str = uuid.toString();
-
-        assertThat(str).matches("[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}");
     }
 
     @Test
@@ -100,8 +63,8 @@ class UuidV7Test {
         };
 
         for (long testTime : testTimes) {
-            UUID uuid = UuidV7.generateMonotonic(() -> testTime);
-            long extractedTime = UuidV7.getTimestamp(uuid);
+            UUID uuid = MonotonicUUIDv7.generate(() -> testTime);
+            long extractedTime = UUIDv7.getTimestamp(uuid);
 
             assertThat(extractedTime)
                 .as("Timestamp should be preserved exactly for %d", testTime)
@@ -111,10 +74,10 @@ class UuidV7Test {
 
     @Test
     void generateMonotonicMethodWorks() {
-        // Generate UUIDs using generateMonotonic()
+        // Generate UUIDs using generate()
         List<UUID> uuids = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-            uuids.add(UuidV7.generateMonotonic());
+            uuids.add(MonotonicUUIDv7.generate());
         }
 
         // Should be unique and valid
@@ -127,13 +90,13 @@ class UuidV7Test {
     }
 
     @Test
-    void generateMonotonicEnsuresStrictOrdering() {
+    void generateEnsuresStrictOrdering() {
         long fixedTime = 1234567890000L;
 
         // Generate multiple UUIDs at the same timestamp
         List<UUID> uuids = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            uuids.add(UuidV7.generateMonotonic(() -> fixedTime));
+            uuids.add(MonotonicUUIDv7.generate(() -> fixedTime));
         }
 
         // Verify they are strictly ordered
@@ -145,14 +108,14 @@ class UuidV7Test {
     }
 
     @Test
-    void generateMonotonicAdvancesTimestampOnCounterOverflow() {
+    void generateAdvancesTimestampOnCounterOverflow() {
         AtomicLong timestamp = new AtomicLong(1234567890000L);
 
         // Generate more than 4096 UUIDs (counter max) to trigger overflow
         // Clock advances with each call, simulating time passing
         List<UUID> uuids = new ArrayList<>();
         for (int i = 0; i < 5000; i++) {
-            uuids.add(UuidV7.generateMonotonic(timestamp::incrementAndGet));
+            uuids.add(MonotonicUUIDv7.generate(timestamp::incrementAndGet));
         }
 
         // Verify all UUIDs are unique
@@ -161,7 +124,7 @@ class UuidV7Test {
 
         // Verify timestamp advanced beyond the initial value
         long maxTimestamp = uuids.stream()
-            .mapToLong(UuidV7::getTimestamp)
+            .mapToLong(UUIDv7::getTimestamp)
             .max()
             .orElse(0);
 
@@ -176,13 +139,13 @@ class UuidV7Test {
     }
 
     @Test
-    void generateMonotonicWithCustomClockEnsuresOrdering() {
+    void generateWithCustomClockEnsuresOrdering() {
         long fixedTime = 1234567890000L;
 
-        // Generate multiple UUIDs using generateMonotonic() with custom clock at same timestamp
+        // Generate multiple UUIDs using generate() with custom clock at same timestamp
         List<UUID> uuids = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-            uuids.add(UuidV7.generateMonotonic(() -> fixedTime));
+            uuids.add(MonotonicUUIDv7.generate(() -> fixedTime));
         }
 
         // Should be strictly ordered despite same timestamp
@@ -192,23 +155,23 @@ class UuidV7Test {
     }
 
     @Test
-    void generateMonotonicResetsCounterOnNewTimestamp() {
+    void generateResetsCounterOnNewTimestamp() {
         AtomicLong timestamp = new AtomicLong(1000000000000L);
 
         // Generate some UUIDs at first timestamp
-        UUID uuid1 = UuidV7.generateMonotonic(timestamp::get);
-        UUID uuid2 = UuidV7.generateMonotonic(timestamp::get);
+        UUID uuid1 = MonotonicUUIDv7.generate(timestamp::get);
+        UUID uuid2 = MonotonicUUIDv7.generate(timestamp::get);
 
         // Advance timestamp
         timestamp.set(2000000000000L);
 
         // Generate UUID at new timestamp
-        UUID uuid3 = UuidV7.generateMonotonic(timestamp::get);
+        UUID uuid3 = MonotonicUUIDv7.generate(timestamp::get);
 
         // uuid3 should have later timestamp
-        assertThat(UuidV7.getTimestamp(uuid3))
-            .isGreaterThan(UuidV7.getTimestamp(uuid1))
-            .isGreaterThan(UuidV7.getTimestamp(uuid2));
+        assertThat(UUIDv7.getTimestamp(uuid3))
+            .isGreaterThan(UUIDv7.getTimestamp(uuid1))
+            .isGreaterThan(UUIDv7.getTimestamp(uuid2));
 
         // uuid3 should sort after uuid1 and uuid2
         assertThat(uuid1.compareTo(uuid3)).isLessThan(0);
@@ -216,14 +179,14 @@ class UuidV7Test {
     }
 
     @Test
-    void monotonicModeUniquenessUnderHighLoad() {
+    void uniquenessUnderHighLoad() {
         AtomicLong timestamp = new AtomicLong(1234567890000L);
 
         // Generate many UUIDs (more than counter capacity of 4096)
         // The clock will naturally advance when counter overflows
         Set<UUID> uuids = new HashSet<>();
         for (int i = 0; i < 10000; i++) {
-            uuids.add(UuidV7.generateMonotonic(timestamp::incrementAndGet));
+            uuids.add(MonotonicUUIDv7.generate(timestamp::incrementAndGet));
         }
 
         // All should be unique
@@ -231,56 +194,9 @@ class UuidV7Test {
 
         // Timestamp should have advanced beyond initial value
         long finalTimestamp = uuids.stream()
-            .mapToLong(UuidV7::getTimestamp)
+            .mapToLong(UUIDv7::getTimestamp)
             .max()
             .orElse(0);
         assertThat(finalTimestamp).isGreaterThan(1234567890000L);
-    }
-
-    @Test
-    void generateNonMonotonicMethodWorks() {
-        // Generate UUIDs using generate() (non-monotonic)
-        Set<UUID> uuids = new HashSet<>();
-        for (int i = 0; i < 1000; i++) {
-            UUID uuid = UuidV7.generate();
-            assertThat(uuid).isNotNull();
-            assertThat(uuid.version()).isEqualTo(7);
-            assertThat(uuid.variant()).isEqualTo(2);
-            uuids.add(uuid);
-        }
-
-        // Should be unique
-        assertThat(uuids).hasSize(1000);
-    }
-
-    @Test
-    void generateNonMonotonicDoesNotBlockOrGuaranteeOrdering() {
-        long fixedTime = 1234567890000L;
-
-        // Generate UUIDs in non-monotonic mode
-        Set<UUID> uuids = new HashSet<>();
-        for (int i = 0; i < 1000; i++) {
-            UUID uuid = UuidV7.generate(() -> fixedTime);
-            assertThat(uuid).isNotNull();
-            assertThat(UuidV7.getTimestamp(uuid)).isEqualTo(fixedTime);
-            uuids.add(uuid);
-        }
-
-        // Should still be unique
-        assertThat(uuids).hasSize(1000);
-    }
-
-    @Test
-    void nonMonotonicModeUniquenessUnderHighLoad() {
-        long fixedTime = 1234567890000L;
-
-        // Generate many UUIDs at the same timestamp in non-monotonic mode
-        Set<UUID> uuids = new HashSet<>();
-        for (int i = 0; i < 10000; i++) {
-            uuids.add(UuidV7.generate(() -> fixedTime));
-        }
-
-        // Should still be unique (random bits provide uniqueness)
-        assertThat(uuids).hasSize(10000);
     }
 }

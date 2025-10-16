@@ -10,61 +10,63 @@ A minimal, high-performance UUID v7 implementation for Java with excellent Kotli
 - Distributed systems where time-based ordering is valuable
 - Event logs and audit trails where chronological sorting is important
 
-VeeSeven provides a lightweight implementation that works seamlessly with Java's standard `java.util.UUID` class.
+This library provides a lightweight implementation that works seamlessly with Java's standard `java.util.UUID` class.
 
 ## Design Principles
 
 **Minimal API Surface**: Static utility methods that work with `java.util.UUID` rather than introducing a new type. This ensures maximum compatibility with existing code.
 
-**Dual-Mode Generation**: Separate methods for different performance/ordering trade-offs:
-- **`generate()` - Non-Monotonic (default)**: Uses `ThreadLocalRandom` with zero synchronization overhead for maximum performance. UUIDs generated in the same millisecond may not be strictly ordered, but uniqueness is maintained through random bits. Ideal for high-throughput scenarios and distributed systems where cross-server ordering guarantees are impossible.
-- **`generateMonotonic()` - Monotonic ordering**: Uses a synchronized counter to ensure strict ordering within the same millisecond, following RFC 9562 recommendations. Best for database primary keys and scenarios requiring guaranteed sequential ordering.
+**Separate Classes for Different Use Cases**: Two distinct implementations for different performance/ordering trade-offs:
+- **`UuidV7`**: Uses `ThreadLocalRandom` with zero synchronization overhead for maximum performance. UUIDs generated in the same millisecond may not be strictly ordered, but uniqueness is maintained through random bits. Ideal for high-throughput scenarios and distributed systems where cross-server ordering guarantees are impossible.
+- **`MonotonicUUIDv7`**: Uses a synchronized counter to ensure strict ordering within the same millisecond, following RFC 9562 recommendations. Best for database primary keys and scenarios requiring guaranteed sequential ordering.
 
 **Timestamp Extraction**: UUIDs contain timing information, and this library makes it easy to extract this for debugging, observability, and time-based queries.
 
-**Flexible Generation**: Static factory for common cases, configurable generators for testing or custom clock sources.
+**Flexible Generation**: Static factories for common cases, configurable generators for testing or custom clock sources.
 
 ## Usage
 
 ### Java
 
 ```java
-import xyz.block.uuidv7.UuidV7;
+import xyz.block.uuidv7.UUIDv7;
+import xyz.block.uuidv7.MonotonicUUIDv7;
 import java.util.UUID;
 
-// Generate a UUID v7 (non-monotonic, maximum performance)
-UUID uuid = UuidV7.generate();
+// Generate a UUID v7 (maximum performance, no ordering guarantees)
+UUID uuid = UUIDv7.generate();
 
 // Generate with monotonic ordering (for database primary keys)
-UUID monotonicUuid = UuidV7.generateMonotonic();
+UUID monotonicUuid = MonotonicUUIDv7.generate();
 
 // Extract the timestamp (milliseconds since Unix epoch)
-long timestamp = UuidV7.getTimestamp(uuid);
+long timestamp = UUIDv7.getTimestamp(uuid);
 
 // Custom clock for testing (non-monotonic)
-UUID testUuid = UuidV7.generate(() -> 1234567890000L);
+UUID testUuid = UUIDv7.generate(() -> 1234567890000L);
 
 // Custom clock with monotonic ordering
-UUID monotonicTestUuid = UuidV7.generateMonotonic(() -> 1234567890000L);
+UUID monotonicTestUuid = MonotonicUUIDv7.generate(() -> 1234567890000L);
 ```
 
 ### Kotlin
 
 ```kotlin
-import xyz.block.uuidv7.UuidV7
+import xyz.block.uuidv7.UUIDv7
+import xyz.block.uuidv7.MonotonicUUIDv7
 import xyz.block.uuidv7.timestamp
 
-// Generate a UUID v7 (non-monotonic, maximum performance)
-val uuid = UuidV7.generate()
+// Generate a UUID v7 (maximum performance, no ordering guarantees)
+val uuid = UUIDv7.generate()
 
 // Generate with monotonic ordering (for database primary keys)
-val monotonicUuid = UuidV7.generateMonotonic()
+val monotonicUuid = MonotonicUUIDv7.generate()
 
 // Extract timestamp with extension property
 val timestamp = uuid.timestamp
 
 // Custom clock with monotonic ordering
-val testUuid = UuidV7.generateMonotonic { 1234567890000L }
+val testUuid = MonotonicUUIDv7.generate { 1234567890000L }
 ```
 
 ## Design Details
@@ -82,36 +84,36 @@ UUID v7 follows RFC 9562:
 
 ### API
 
-#### Non-Monotonic (High Performance)
+#### UUIDv7 (High Performance, No Ordering Guarantees)
 
-**`UuidV7.generate()`**: Generate a new UUID v7 using current system time. Uses `ThreadLocalRandom` with no synchronization for maximum performance. Returns `java.util.UUID`.
+**`UUIDv7.generate()`**: Generate a new UUID v7 using current system time. Uses `ThreadLocalRandom` with no synchronization for maximum performance. Returns `java.util.UUID`.
 
-**`UuidV7.generate(LongSupplier clock)`**: Generate a new UUID v7 with a custom clock source (milliseconds since Unix epoch). Useful for testing or specialized use cases.
+**`UUIDv7.generate(LongSupplier clock)`**: Generate a new UUID v7 with a custom clock source (milliseconds since Unix epoch). Useful for testing or specialized use cases.
 
-#### Monotonic (Sequential Ordering)
+#### MonotonicUUIDv7 (Sequential Ordering Guaranteed)
 
-**`UuidV7.generateMonotonic()`**: Generate a new UUID v7 using current system time with monotonic ordering. Uses a synchronized counter to ensure strict ordering within the same millisecond. Returns `java.util.UUID`.
+**`MonotonicUUIDv7.generate()`**: Generate a new UUID v7 using current system time with monotonic ordering. Uses a synchronized counter to ensure strict ordering within the same millisecond. Returns `java.util.UUID`.
 
-**`UuidV7.generateMonotonic(LongSupplier clock)`**: Generate a new UUID v7 with a custom clock source and monotonic ordering. Useful for testing monotonic behavior with controlled clock sources.
+**`MonotonicUUIDv7.generate(LongSupplier clock)`**: Generate a new UUID v7 with a custom clock source and monotonic ordering. Useful for testing monotonic behavior with controlled clock sources.
 
 #### Utility Methods
 
-**`UuidV7.getTimestamp(UUID)`**: Extract the millisecond timestamp from a UUID v7. Returns `long`.
+**`UUIDv7.getTimestamp(UUID)`**: Extract the millisecond timestamp from any UUID v7 (works with both UUIDv7 and MonotonicUUIDv7 generated UUIDs). Returns `long`.
 
 **Kotlin Extensions**: `UUID.timestamp` extension property for idiomatic timestamp extraction.
 
 ### Implementation Details
 
-**`generateMonotonic()` methods**:
-- Use a synchronized counter for strict ordering within the same millisecond
-- Guarantee ordering: `uuid1.compareTo(uuid2) < 0` for sequential generation
+**`MonotonicUUIDv7` class**:
+- Uses a synchronized counter for strict ordering within the same millisecond
+- Guarantees ordering: `uuid1.compareTo(uuid2) < 0` for sequential generation
 - Can generate up to 4096 UUIDs per millisecond before blocking
 - If counter overflows, waits for the next millisecond to maintain uniqueness
 - Counter resets to a random value when the timestamp advances (unpredictability)
 - Best for: Database primary keys, audit logs, any scenario requiring guaranteed ordering
 
-**`generate()` methods**:
-- Use `ThreadLocalRandom` for the counter field with zero synchronization overhead
+**`UUIDv7` class**:
+- Uses `ThreadLocalRandom` for the counter field with zero synchronization overhead
 - Maximum performance with no blocking possible
 - Uniqueness guaranteed by random bits, but ordering within a millisecond is not guaranteed
 - Best for: High-throughput scenarios, distributed systems, logging, tracing
@@ -125,9 +127,9 @@ This implementation uses **`ThreadLocalRandom`** for generating random bits rath
 - **Sufficient for UUIDs**: Cryptographic randomness is not required for UUID generation. The primary goals are uniqueness and unpredictability, not security
 - **RFC 9562 Compliance**: The RFC does not mandate cryptographic randomness for UUID generation
 
-**Usage by method**:
-- **`generate()` methods**: Use `ThreadLocalRandom` for all random bits (rand_a and rand_b) with zero synchronization overhead
-- **`generateMonotonic()` methods**: Use `ThreadLocalRandom` for rand_b (62 bits) and `SecureRandom` only to initialize the counter value when the timestamp advances, providing unpredictability while maintaining performance
+**Usage by class**:
+- **`UUIDv7`**: Uses `ThreadLocalRandom` for all random bits (rand_a and rand_b) with zero synchronization overhead
+- **`MonotonicUUIDv7`**: Uses `ThreadLocalRandom` for rand_b (62 bits) and `SecureRandom` only to initialize the counter value when the timestamp advances, providing unpredictability while maintaining performance
 
 ## Project Resources
 

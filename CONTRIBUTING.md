@@ -23,14 +23,16 @@
 src/
   main/
     java/xyz/block/uuidv7/
-      UuidV7.java              # Core implementation
+      UUIDv7.java              # High-performance UUID v7 (no ordering guarantees)
+      MonotonicUUIDv7.java     # Monotonic UUID v7 (strict ordering)
     kotlin/xyz/block/uuidv7/
       UuidV7Extensions.kt      # Kotlin extensions
   test/
     java/xyz/block/uuidv7/
-      UuidV7Test.java          # Java tests
+      UUIDv7Test.java          # Tests for UUIDv7
+      MonotonicUUIDv7Test.java # Tests for MonotonicUUIDv7
     kotlin/xyz/block/uuidv7/
-      UuidV7ExtensionsTest.kt  # Kotlin tests
+      UUIDv7ExtensionsTest.kt  # Kotlin tests
 ```
 
 ## Code Style
