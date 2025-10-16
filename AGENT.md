@@ -1,7 +1,7 @@
 # Agent Guide
 
-For project overview and API documentation, see [README.md](./README.md).  
-For build instructions and contribution guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+For project overview and API documentation, you must read [README.md](./README.md).  
+For build instructions and contribution guidelines, you must read [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Quick Commands
 
