@@ -35,4 +35,4 @@ For build instructions and contribution guidelines, you must read [CONTRIBUTING.
 
 ### Package-Private Methods
 
-- `UUIDv7.buildUuid(long timestamp, int counterValue, byte[] randomBytes)`: Shared method for constructing UUID v7 from components, used by both UUIDv7 and MonotonicUUIDv7
+- `UUIDv7.build(long timestamp, int randA, long randB)`: Shared method for constructing UUID v7 from timestamp and random components (randA for bits 52-63, randB for bits 66-127), used by both UUIDv7 and MonotonicUUIDv7
