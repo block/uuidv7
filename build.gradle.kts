@@ -1,53 +1,65 @@
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
+
 plugins {
-    java
-    kotlin("jvm") version "1.9.22"
-    `maven-publish`
+  java
+  kotlin("jvm") version "1.9.22"
+  `maven-publish`
+  id("com.vanniktech.maven.publish") version "0.34.0"
 }
 
 group = "xyz.block"
-version = "0.1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
-    mavenCentral()
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
-    withSourcesJar()
-    withJavadocJar()
+  mavenCentral()
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-    
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
-    testImplementation("org.assertj:assertj-core:3.24.2")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+  implementation(kotlin("stdlib"))
+
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
+  testImplementation("org.assertj:assertj-core:3.24.2")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            
-            pom {
-                name.set("UUIDv7")
-                description.set("A minimal UUID v7 implementation for Java with Kotlin bindings")
-                url.set("https://github.com/block/uuidv7")
-                
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-            }
-        }
+mavenPublishing {
+  publishToMavenCentral(automaticRelease = true)
+  signAllPublications()
+
+  configure(
+    JavaLibrary(
+      javadocJar = JavadocJar.Javadoc(),
+      sourcesJar = true,
+    )
+  )
+
+  pom {
+    name.set("UUIDv7")
+    description.set("A minimal UUID v7 implementation for Java with Kotlin bindings")
+    url.set("https://github.com/block/uuidv7")
+
+    licenses {
+      license {
+        name.set("The Apache License, Version 2.0")
+        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+        distribution.set("repo")
+      }
     }
+    developers {
+      developer {
+        id.set("block")
+        name.set("Block")
+      }
+    }
+    scm {
+      url.set("https://github.com/block/uuidv7/")
+      connection.set("scm:git:https://github.com/block/uuidv7.git")
+      developerConnection.set("scm:git:ssh://git@github.com/block/uuidv7.git")
+    }
+  }
 }
