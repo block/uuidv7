@@ -29,4 +29,29 @@ class UUIDv7ExtensionsTest {
         
         assertThat(timestamp).isEqualTo(9999999999L)
     }
+
+    @Test
+    fun `compactString extension property returns 22 character string`() {
+        val uuid = UUIDv7.generate()
+        val compactString = uuid.compactString
+
+        assertThat(compactString).hasSize(22)
+    }
+
+    @Test
+    fun `compactString extension round-trips correctly`() {
+        val original = UUIDv7.generate()
+        val compactString = original.compactString
+        val decoded = UUIDv7.fromCompactString(compactString)
+
+        assertThat(decoded).isEqualTo(original)
+    }
+
+    @Test
+    fun `compactString only uses alphanumeric characters`() {
+        val uuid = UUIDv7.generate()
+        val compactString = uuid.compactString
+
+        assertThat(compactString).matches("[0-9A-Za-z]{22}")
+    }
 }

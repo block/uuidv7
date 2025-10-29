@@ -22,6 +22,8 @@ This library provides a lightweight implementation that works seamlessly with Ja
 
 **Timestamp Extraction**: UUIDs contain timing information, and this library makes it easy to extract this for debugging, observability, and time-based queries.
 
+**Compact String Representation**: UUIDs can be encoded as 22-character Base62 strings (using `0-9A-Za-z`) that are URL-safe, shorter than standard UUID strings (36 characters), and preserve lexicographic sort order for time-ordered UUIDs.
+
 **Flexible Generation**: Static factories for common cases, configurable generators for testing or custom clock sources.
 
 ## Usage
@@ -42,6 +44,15 @@ UUID monotonicUuid = MonotonicUUIDv7.generate();
 // Extract the timestamp (milliseconds since Unix epoch)
 long timestamp = UUIDv7.getTimestamp(uuid);
 
+// Generate a compact string directly (22 characters, Base62)
+String compactId = UUIDv7.generateCompactString();
+
+// Convert UUID to compact string (preserves sort order)
+String compact = UUIDv7.toCompactString(uuid);
+
+// Convert compact string back to UUID
+UUID fromCompact = UUIDv7.fromCompactString(compact);
+
 // Custom clock for testing (non-monotonic)
 UUID testUuid = UUIDv7.generate(() -> 1234567890000L);
 
@@ -55,6 +66,7 @@ UUID monotonicTestUuid = MonotonicUUIDv7.generate(() -> 1234567890000L);
 import xyz.block.uuidv7.UUIDv7
 import xyz.block.uuidv7.MonotonicUUIDv7
 import xyz.block.uuidv7.timestamp
+import xyz.block.uuidv7.compactString
 
 // Generate a UUID v7 (maximum performance, no ordering guarantees)
 val uuid = UUIDv7.generate()
@@ -64,6 +76,15 @@ val monotonicUuid = MonotonicUUIDv7.generate()
 
 // Extract timestamp with extension property
 val timestamp = uuid.timestamp
+
+// Generate a compact string directly (22 characters, Base62)
+val compactId = UUIDv7.generateCompactString()
+
+// Convert UUID to compact string with extension property
+val compact = uuid.compactString
+
+// Convert compact string back to UUID
+val fromCompact = UUIDv7.fromCompactString(compact)
 
 // Custom clock with monotonic ordering
 val testUuid = MonotonicUUIDv7.generate { 1234567890000L }
@@ -100,7 +121,17 @@ UUID v7 follows RFC 9562:
 
 **`UUIDv7.getTimestamp(UUID)`**: Extract the millisecond timestamp from any UUID v7 (works with both UUIDv7 and MonotonicUUIDv7 generated UUIDs). Returns `long`.
 
-**Kotlin Extensions**: `UUID.timestamp` extension property for idiomatic timestamp extraction.
+**Compact String Methods**:
+- **`UUIDv7.generateCompactString()`**: Generate a new UUID v7 and return it as a 22-character compact string
+- **`UUIDv7.generateCompactString(LongSupplier clock)`**: Generate with custom clock source, return as compact string
+- **`UUIDv7.toCompactString(UUID)`**: Convert any UUID to a 22-character Base62 compact string
+- **`UUIDv7.fromCompactString(String)`**: Convert a compact string back to UUID
+
+The compact string format uses Base62 encoding (`0-9A-Za-z`) producing URL-safe, 22-character strings that preserve lexicographic sort order for time-ordered UUIDs. This is 39% shorter than standard UUID string format (36 characters with hyphens).
+
+**Kotlin Extensions**: 
+- `UUID.timestamp` extension property for idiomatic timestamp extraction
+- `UUID.compactString` extension property for conversion to compact string format
 
 ### Implementation Details
 

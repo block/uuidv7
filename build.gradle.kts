@@ -11,6 +11,16 @@ plugins {
 group = "xyz.block"
 version = "1.0.1"
 
+kotlin {
+  jvmToolchain(21)
+}
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(21))
+  }
+}
+
 repositories {
   mavenCentral()
 }
