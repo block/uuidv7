@@ -44,7 +44,8 @@ src/
 ## Submitting Changes
 
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch in the style username-feature-name
 3. Make your changes with tests
 4. Ensure `./gradlew test` passes
-5. Submit a pull request
+5. Ensure you've updated all *.md documentation files
+6. Submit a pull request
