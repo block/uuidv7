@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "xyz.block"
-version = "1.1-SNAPSHOT"
+version = "1.1.0"
 
 kotlin {
   jvmToolchain(21)
