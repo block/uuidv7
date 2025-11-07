@@ -2,6 +2,7 @@
 
 For project overview and API documentation, you must read [README.md](./README.md).  
 For build instructions and contribution guidelines, you must read [CONTRIBUTING.md](./CONTRIBUTING.md).
+For instructions for releasing a new version, you must read [RELEASING.md](./RELEASING.md).
 
 ## Quick Commands
 
