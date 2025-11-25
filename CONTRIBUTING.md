@@ -1,51 +1,64 @@
 # Contributing to UUIDv7
 
-## Prerequisites
+Thank you for your interest in contributing to UUIDv7!
 
-- Java 21 or later
-- No need to install Gradle - the project uses Gradle Wrapper
+## Multi-Language Repository
 
-## Building
+This repository contains UUID v7 implementations for multiple languages. Each language has its own subdirectory with its own build system, tests, and documentation.
 
-```bash
-./gradlew build
-```
+## Language-Specific Guides
 
-## Running Tests
+For detailed contribution guidelines for each language, see:
 
-```bash
-./gradlew test
-```
+- **Java**: [java/CONTRIBUTING.md](java/CONTRIBUTING.md)
+- **Ruby**: Coming soon
+- **Go**: Coming soon
+- **JavaScript**: Coming soon
+- **Swift**: Coming soon
 
-## Project Structure
+## General Guidelines
 
-```
-src/
-  main/
-    java/xyz/block/uuidv7/
-      UUIDv7.java              # High-performance UUID v7 (no ordering guarantees)
-      MonotonicUUIDv7.java     # Monotonic UUID v7 (strict ordering)
-    kotlin/xyz/block/uuidv7/
-      UuidV7Extensions.kt      # Kotlin extensions
-  test/
-    java/xyz/block/uuidv7/
-      UUIDv7Test.java          # Tests for UUIDv7
-      MonotonicUUIDv7Test.java # Tests for MonotonicUUIDv7
-    kotlin/xyz/block/uuidv7/
-      UUIDv7ExtensionsTest.kt  # Kotlin tests
-```
+### Design Principles
 
-## Code Style
+All language implementations should follow these core principles:
 
-- Follow standard Java and Kotlin conventions
-- Keep the API minimal and focused
-- Ensure all tests pass before submitting a PR
+1. **Minimal API Surface**: Work with the language's standard UUID type when possible
+2. **Two Variants**: Provide both standard (high-performance) and monotonic (strictly ordered) implementations
+3. **Timestamp Extraction**: Allow extracting the embedded timestamp from UUID v7
+4. **Compact Strings**: Support Base62 encoding for shorter, URL-safe representations
+5. **No External Dependencies**: Minimize or eliminate external dependencies
+
+### Testing
+
+Each implementation should include:
+- Unit tests for UUID generation
+- Tests for timestamp extraction
+- Tests for compact string encoding/decoding
+- Tests for monotonic ordering (if applicable)
+- Performance benchmarks
+
+### Documentation
+
+Each language directory should have:
+- README.md with installation, usage examples, and API reference
+- CONTRIBUTING.md with language-specific build/test instructions
+- Inline documentation following the language's conventions
+
+### Code Style
+
+- Follow the standard conventions for each language
+- Keep APIs consistent across languages where possible
+- Prefer clarity and simplicity over cleverness
 
 ## Submitting Changes
 
 1. Fork the repository
-2. Create a feature branch in the style username-feature-name
+2. Create a feature branch in the style `username-feature-name`
 3. Make your changes with tests
-4. Ensure `./gradlew test` passes
-5. Ensure you've updated all *.md documentation files
+4. Ensure all tests pass
+5. Update documentation
 6. Submit a pull request
+
+## Questions?
+
+Open an issue for discussion before starting work on major features.

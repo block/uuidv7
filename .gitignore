@@ -1,7 +1,29 @@
-# Gradle
+# Java / Gradle
 .gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
+
+# Ruby
+*.gem
+.bundle/
+vendor/bundle/
+Gemfile.lock
+
+# Go
+go.sum
+
+# JavaScript / Node
+node_modules/
+dist/
+*.log
+package-lock.json
+yarn.lock
+
+# Swift
+.build/
+.swiftpm/
+*.xcodeproj
+*.xcworkspace
 
 # IDEs
 .idea/

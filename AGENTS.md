@@ -1,39 +1,93 @@
 # Agent Guide
 
-For project overview and API documentation, you must read [README.md](./README.md).  
-For build instructions and contribution guidelines, you must read [CONTRIBUTING.md](./CONTRIBUTING.md).
-For instructions for releasing a new version, you must read [RELEASING.md](./RELEASING.md).
+This is a multi-language monorepo for UUID v7 implementations.
 
-## Quick Commands
+## Repository Structure
 
-```bash
-./gradlew build    # Build project
-./gradlew test     # Run tests
+```
+/
+├── java/         # Java implementation (stable)
+├── ruby/         # Ruby implementation (planned)
+├── go/           # Go implementation (planned)
+├── javascript/   # JavaScript implementation (planned)
+├── swift/        # Swift implementation (planned)
+├── README.md     # Multi-language overview
+└── AGENTS.md     # This file
 ```
 
-## Key Implementation Details
+## Language-Specific Guides
 
-### Random Number Generation Strategy
+Each language has its own AGENTS.md with implementation details:
 
-- **UUIDv7**: Uses `ThreadLocalRandom` for all random bits (maximum performance)
-- **MonotonicUUIDv7**: Uses `ThreadLocalRandom` for rand_b (62 bits), `SecureRandom` only for counter initialization
-- **Rationale**: Cryptographic randomness not required for UUIDs; performance is priority
+- **Java**: [java/AGENTS.md](java/AGENTS.md)
+- **Ruby**: Coming soon
+- **Go**: Coming soon
+- **JavaScript**: Coming soon
+- **Swift**: Coming soon
 
-### Monotonic Counter Behavior
+## Shared Implementation Principles
 
-- Counter occupies 12 bits (rand_a field): 0-4095
-- Counter increments with each generation in same millisecond
-- Counter resets to **random value** when timestamp advances (not zero!)
-- If counter overflows (4096 in same ms), method blocks/waits for next millisecond
-- This ensures uniqueness while maintaining strict ordering
+All implementations should follow these principles:
+
+### UUID v7 Format
+
+- **Bits 0-47**: Unix timestamp in milliseconds (48 bits)
+- **Bits 48-51**: Version field (0111 for v7)
+- **Bits 52-63**: Counter or random bits (12 bits, `rand_a`)
+- **Bits 64-65**: Variant field (10 for RFC 4122)
+- **Bits 66-127**: Random bits (62 bits, `rand_b`)
+
+### Two Variants
+
+1. **Standard (High Performance)**
+   - Uses thread-local random for all random bits
+   - Zero synchronization overhead
+   - No ordering guarantees within same millisecond
+   - Best for: High-throughput scenarios, distributed systems
+
+2. **Monotonic (Strictly Ordered)**
+   - Uses synchronized counter for `rand_a` (12 bits: 0-4095)
+   - Counter increments within same millisecond
+   - Counter resets to random value when timestamp advances
+   - If counter overflows (4096 in same ms), wait for next millisecond
+   - Best for: Database primary keys, audit logs
 
 ### Timestamp Extraction
 
 - Timestamp is in most significant 48 bits
-- Extract via: `uuid.getMostSignificantBits() >>> 16`
 - Returns milliseconds since Unix epoch
-- Validates UUID is version 7 before extracting
+- Should validate UUID is version 7 before extracting
 
-### Package-Private Methods
+### Compact String Encoding (PRIMARY FORMAT)
 
-- `UUIDv7.build(long timestamp, int randA, long randB)`: Shared method for constructing UUID v7 from timestamp and random components (randA for bits 52-63, randB for bits 66-127), used by both UUIDv7 and MonotonicUUIDv7
+**This is the primary ID format - all implementations MUST support generating and parsing compact strings.**
+
+- 22-character Base62 encoding using `0-9A-Za-z`
+- **Lexicographically sortable** - maintains time-based ordering
+- URL-safe with no special characters or encoding needed
+- 39% shorter than standard UUID string format (22 vs 36 chars)
+- Database indexes are smaller and faster
+- Example: `01JDQYZ9M6K7TCJK2F3W8N`
+
+**Implementation requirements:**
+- Provide a method to generate UUID v7 directly as a compact string
+- Provide a method to parse compact string back to UUID
+- Provide a method to convert any UUID to/from compact string
+- Ensure lexicographic sort order is preserved (big-endian encoding)
+
+### Random Number Generation
+
+- Use fast, non-cryptographic random (e.g., `ThreadLocalRandom` in Java)
+- Cryptographic randomness not required for UUIDs (per RFC 9562)
+- Performance is priority over cryptographic security
+- Monotonic variant may use secure random only for counter initialization
+
+## Working on a Language Implementation
+
+When adding or modifying a language implementation:
+
+1. Navigate to the language subdirectory
+2. Read the language-specific AGENTS.md
+3. Follow the build/test commands for that language
+4. Ensure tests pass before submitting PR
+5. Update both language-specific and root README if needed
