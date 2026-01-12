@@ -161,13 +161,3 @@ This implementation uses **`ThreadLocalRandom`** for generating random bits rath
 **Usage by class**:
 - **`UUIDv7`**: Uses `ThreadLocalRandom` for all random bits (rand_a and rand_b) with zero synchronization overhead
 - **`MonotonicUUIDv7`**: Uses `ThreadLocalRandom` for rand_b (62 bits) and `SecureRandom` only to initialize the counter value when the timestamp advances, providing unpredictability while maintaining performance
-
-## Project Resources
-
-| Resource                                   | Description                                                                    |
-| ------------------------------------------ | ------------------------------------------------------------------------------ |
-| [CODEOWNERS](./CODEOWNERS)                 | Outlines the project lead(s)                                                   |
-| [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) | Expected behavior for project contributors, promoting a welcoming environment |
-| [CONTRIBUTING.md](./CONTRIBUTING.md)       | Developer guide to build, test, run, access CI, chat, discuss, file issues     |
-| [GOVERNANCE.md](./GOVERNANCE.md)           | Project governance                                                             |
-| [LICENSE](./LICENSE)                       | Apache License, Version 2.0                                                    |
