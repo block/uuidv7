@@ -1,0 +1,17 @@
+public final class xyz/block/uuidv7/MonotonicUUIDv7 {
+	public static final field INSTANCE Lxyz/block/uuidv7/MonotonicUUIDv7;
+	public static final fun generate ()Ljava/util/UUID;
+	public static final fun generate (Ljava/util/function/LongSupplier;)Ljava/util/UUID;
+}
+
+public final class xyz/block/uuidv7/UUIDv7 {
+	public static final field INSTANCE Lxyz/block/uuidv7/UUIDv7;
+	public static final fun fromCompactString (Ljava/lang/String;)Ljava/util/UUID;
+	public static final fun generate ()Ljava/util/UUID;
+	public static final fun generate (Ljava/util/function/LongSupplier;)Ljava/util/UUID;
+	public static final fun generateCompactString ()Ljava/lang/String;
+	public static final fun generateCompactString (Ljava/util/function/LongSupplier;)Ljava/lang/String;
+	public static final fun getTimestamp (Ljava/util/UUID;)J
+	public static final fun toCompactString (Ljava/util/UUID;)Ljava/lang/String;
+}
+

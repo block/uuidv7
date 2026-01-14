@@ -2,10 +2,9 @@ import com.vanniktech.maven.publish.JavaLibrary
 import com.vanniktech.maven.publish.JavadocJar
 
 plugins {
-  java
-  kotlin("jvm") version "1.9.22"
-  `maven-publish`
-  id("com.vanniktech.maven.publish") version "0.34.0"
+  kotlin("jvm") version "2.3.0"
+  id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.17.0"
+  id("com.vanniktech.maven.publish") version "0.35.0"
 }
 
 group = "xyz.block"
@@ -13,6 +12,7 @@ version = "1.2.0-SNAPSHOT"
 
 kotlin {
   jvmToolchain(21)
+  explicitApi()
 }
 
 java {

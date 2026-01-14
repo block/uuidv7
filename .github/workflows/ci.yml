@@ -27,9 +27,13 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
       working-directory: java
-    
+
     - name: Run tests
       run: ./gradlew test
+      working-directory: java
+
+    - name: Run checks
+      run: ./gradlew check
       working-directory: java
 
   javascript:

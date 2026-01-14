@@ -2,6 +2,8 @@ package xyz.block.uuidv7
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import xyz.block.uuidv7.UUIDv7.compactString
+import xyz.block.uuidv7.UUIDv7.timestamp
 
 class UUIDv7ExtensionsTest {
     
