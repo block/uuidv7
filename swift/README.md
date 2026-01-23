@@ -12,15 +12,58 @@ A minimal, high-performance UUID v7 implementation for Swift.
 
 This library provides a lightweight implementation that works seamlessly with Swift's standard `UUID` type.
 
-### Compact Base62 Format
+### Compact Base62 Format — Block's Standard ID Format
 
-**Recommended for APIs, databases, and anywhere IDs are stored or transmitted as text.**
+**At Block, the compact string format is our standard for UUID v7 identifiers.** When you don't have a native UUID storage type (like PostgreSQL's `uuid` or a 128-bit binary column), the compact format is the optimal choice for storing and transmitting IDs as text.
 
-This implementation provides 22-character Base62 compact strings using `0-9A-Za-z` that are:
-- **39% shorter** than standard UUID strings (22 vs 36 characters)
-- **Lexicographically sortable** - preserves time-based ordering in databases and APIs
-- **URL-safe** - no special characters, hyphens, or encoding needed
-- **Database-friendly** - shorter indexed strings mean better query performance
+#### Why Compact Format?
+
+The standard UUID string format (`01936c0a-5e0c-7b3a-8f9d-2e1c4a6b8d0f`) was designed for human readability with hyphens, but this comes at a cost:
+
+| Aspect | Standard UUID | Compact String | Advantage |
+|--------|---------------|----------------|-----------|
+| Length | 36 characters | 22 characters | **39% smaller** |
+| Storage | 36 bytes (text) | 22 bytes (text) | Less disk, memory, bandwidth |
+| Index size | Larger B-tree nodes | Smaller B-tree nodes | **Faster queries** |
+| URL encoding | Hyphens are safe, but verbose | No encoding needed | Cleaner URLs |
+| Sort order | Lexicographic ≠ time order | **Lexicographic = time order** | Natural sorting works |
+
+#### The Sortability Problem with Standard UUIDs
+
+Standard UUID strings don't sort chronologically because the string representation doesn't preserve numeric order:
+
+```
+Standard (WRONG order when sorted as strings):
+  01936c0a-5e0c-7...  →  timestamp: 1700000000000
+  f1936c0a-5e0c-7...  →  timestamp: 1600000000000  ← sorts AFTER despite being EARLIER
+```
+
+The compact Base62 format uses big-endian encoding that preserves the numeric ordering:
+
+```
+Compact (CORRECT order when sorted as strings):
+  0K5VxR...  →  timestamp: 1600000000000
+  0K8TmN...  →  timestamp: 1700000000000  ← correctly sorts after
+```
+
+#### When to Use Each Format
+
+| Storage Type | Recommended Format |
+|--------------|-------------------|
+| PostgreSQL `uuid` column | Native UUID (binary) |
+| MySQL `BINARY(16)` | Native UUID (binary) |
+| Text columns (VARCHAR, TEXT) | **Compact string** |
+| JSON APIs | **Compact string** |
+| URLs and paths | **Compact string** |
+| Logs and debugging | Either (standard more readable) |
+
+#### Design
+
+The compact format uses Base62 encoding with the alphabet `0-9A-Za-z`:
+- **22 characters** encode the full 128-bit UUID
+- **Big-endian** byte order ensures lexicographic sorting matches numeric sorting
+- **No special characters** — alphanumeric only, URL-safe without encoding
+- **Fixed length** — always exactly 22 characters, no padding needed
 
 **Example**: `01JDQYZ9M6K7TCJK2F3W8N` (compact) vs `01936c0a-5e0c-7b3a-8f9d-2e1c4a6b8d0f` (standard)
 
