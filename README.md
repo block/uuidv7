@@ -31,9 +31,9 @@ Use compact strings for wire formats, database text fields, URLs, and API respon
 | Language | Status | Directory | Package |
 |----------|--------|-----------|---------|
 | **Java** | ✅ Stable | [java/](java/) | `xyz.block:uuidv7` |
+| **JavaScript** | ✅ Stable | [javascript/](javascript/) | `@block/uuidv7` |
 | **Ruby** | 🚧 Planned | [ruby/](ruby/) | - |
 | **Go** | 🚧 Planned | [go/](go/) | - |
-| **JavaScript** | 🚧 Planned | [javascript/](javascript/) | - |
 | **Swift** | 🚧 Planned | [swift/](swift/) | - |
 
 ## Design Principles
@@ -66,9 +66,9 @@ UUID v7 follows RFC 9562:
 See the README in each language directory for installation and usage:
 
 - **Java**: [java/README.md](java/README.md)
+- **JavaScript**: [javascript/README.md](javascript/README.md)
 - **Ruby**: Coming soon
 - **Go**: Coming soon
-- **JavaScript**: Coming soon
 - **Swift**: Coming soon
 
 ## Project Resources
