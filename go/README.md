@@ -79,9 +79,9 @@ compact := uuidv7.GenerateCompactStringWithClock(clock)
 ```go
 uuid := uuidv7.Generate()
 
-// String representation
-uuid.String()         // "01936a7e-5c1d-7abc-8def-0123456789ab"
-uuid.CompactString()  // "01JDQYZ9M6K7TCJK2F3W8N" (22 chars)
+// String representation - two formats available:
+uuid.String()         // "01936a7e-5c1d-7abc-8def-0123456789ab" (36 chars)
+uuid.CompactString()  // "01JDQYZ9M6K7TCJK2F3W8N" (22 chars, recommended)
 
 // Extract timestamp
 ts, err := uuid.Timestamp()  // milliseconds since Unix epoch
@@ -114,6 +114,32 @@ uuid, err := uuidv7.FromBytes(bytes)
 compact := uuidv7.ToCompactString(uuid)
 ```
 
+### Compact String Format
+
+Compact strings are **Base62-encoded** UUIDs using only `0-9`, `A-Z`, `a-z`:
+
+| Format | Example | Length | Storage |
+|--------|---------|--------|---------|
+| Standard | `01936a7e-5c1d-7abc-8def-0123456789ab` | 36 chars | 36 bytes |
+| Compact | `01JDQYZ9M6K7TCJK2F3W8N` | 22 chars | 22 bytes |
+
+**Why use compact strings?**
+- **39% smaller** - 22 vs 36 characters saves storage in databases and logs
+- **No dashes** - No punctuation means no escaping in URLs, filenames, or shell commands
+- **Lexicographically sortable** - Maintains time-ordering when sorted as strings
+- **URL-safe** - No special characters requiring percent-encoding
+
+```go
+// These are equivalent - same UUID, different string formats
+uuid := uuidv7.Generate()
+uuid.String()        // "01936a7e-5c1d-7abc-8def-0123456789ab"
+uuid.CompactString() // "01JDQYZ9M6K7TCJK2F3W8N"
+
+// Both can round-trip back to the same UUID
+uuidv7.FromString("01936a7e-5c1d-7abc-8def-0123456789ab")
+uuidv7.FromCompactString("01JDQYZ9M6K7TCJK2F3W8N")
+```
+
 ## When to Use Each Variant
 
 ### `Generate()` - High Performance
@@ -129,24 +155,6 @@ compact := uuidv7.ToCompactString(uuid)
 - Guarantees: Strict ordering within process
 - Uses synchronized counter (12 bits: 0-4095 per millisecond)
 - If counter overflows (>4096 in same ms), blocks until next millisecond
-
-## Compact String Format
-
-The compact string format provides:
-
-- **22 characters** vs 36 for standard UUID strings (39% shorter)
-- **Lexicographically sortable** - maintains time-based ordering
-- **URL-safe** - only uses `0-9`, `A-Z`, `a-z`
-- **Smaller indexes** - better database performance
-
-```go
-uuid := uuidv7.Generate()
-compact := uuid.CompactString()  // "01JDQYZ9M6K7TCJK2F3W8N"
-
-// Round-trip
-decoded, _ := uuidv7.FromCompactString(compact)
-// decoded == uuid
-```
 
 ## UUID v7 Format
 
