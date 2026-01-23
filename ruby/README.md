@@ -14,13 +14,45 @@ A minimal, high-performance UUID v7 implementation for Ruby.
 
 **Recommended for APIs, databases, and anywhere IDs are stored or transmitted as text.**
 
-This implementation provides 22-character Base62 compact strings using `0-9A-Za-z` that are:
+#### Why Compact Strings?
+
+UUIDs are 128-bit values. When you need to store or transmit them, you have two choices:
+
+1. **Binary (16 bytes)**: Most efficient, but not human-readable and requires binary-safe storage
+2. **String**: Human-readable and universally supported, but takes more space
+
+If you must use strings (APIs, URLs, text database columns, JSON, logs), the standard UUID format (`01936c0a-5e0c-7b3a-8f9d-2e1c4a6b8d0f`) uses 36 characters. The compact format reduces this to **22 characters** while preserving all the benefits of UUID v7.
+
+#### How It Works
+
+The compact format uses **Base62 encoding** (digits `0-9`, uppercase `A-Z`, lowercase `a-z`) to represent the 128-bit UUID value. This is similar to how Base64 works, but without special characters like `+`, `/`, or `=`.
+
+```
+Standard:  01936c0a-5e0c-7b3a-8f9d-2e1c4a6b8d0f  (36 chars)
+Compact:   01JDQYZ9M6K7TCJK2F3W8N                (22 chars)
+           ↑
+           Same UUID, different encoding
+```
+
+The encoding preserves **lexicographic ordering**: if UUID A was generated before UUID B, then `compact(A) < compact(B)` in string comparison. This means database indexes on compact strings maintain time-ordering, and APIs can sort by ID to get chronological order.
+
+#### When to Use Compact Strings
+
+| Use Case | Recommended Format |
+|----------|-------------------|
+| Database binary column (BINARY(16), BLOB) | Binary (16 bytes) |
+| Database text/VARCHAR column | **Compact (22 chars)** |
+| REST API responses | **Compact (22 chars)** |
+| URLs and query parameters | **Compact (22 chars)** |
+| Logs and debugging | Standard (36 chars) for readability |
+| Interop with systems expecting standard UUIDs | Standard (36 chars) |
+
+#### Benefits Summary
+
 - **39% shorter** than standard UUID strings (22 vs 36 characters)
 - **Lexicographically sortable** - preserves time-based ordering in databases and APIs
 - **URL-safe** - no special characters, hyphens, or encoding needed
-- **Database-friendly** - shorter indexed strings mean better query performance
-
-**Example**: `01JDQYZ9M6K7TCJK2F3W8N` (compact) vs `01936c0a-5e0c-7b3a-8f9d-2e1c4a6b8d0f` (standard)
+- **Database-friendly** - smaller indexes, faster queries, less storage
 
 ## Installation
 

@@ -7,7 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  java:
+    name: Java
     runs-on: ubuntu-latest
     
     steps:
@@ -30,3 +31,25 @@ jobs:
     - name: Run tests
       run: ./gradlew test
       working-directory: java
+
+  ruby:
+    name: Ruby
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'
+        bundler-cache: true
+        working-directory: ruby
+    
+    - name: Run tests
+      run: bundle exec rake spec
+      working-directory: ruby
+    
+    - name: Run linter
+      run: bundle exec rake rubocop
+      working-directory: ruby
