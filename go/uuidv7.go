@@ -67,11 +67,6 @@ func Generate() UUID {
 	return GenerateWithClock(DefaultClock)
 }
 
-// New is an alias for Generate.
-func New() UUID {
-	return Generate()
-}
-
 // GenerateWithClock creates a new UUID v7 using a custom clock source.
 //
 // Uses math/rand/v2 for maximum performance with no synchronization overhead.
@@ -93,11 +88,6 @@ func GenerateWithClock(clock Clock) UUID {
 // requiring guaranteed sequential ordering.
 func GenerateMonotonic() UUID {
 	return GenerateMonotonicWithClock(DefaultClock)
-}
-
-// NewMonotonic is an alias for GenerateMonotonic.
-func NewMonotonic() UUID {
-	return GenerateMonotonic()
 }
 
 // GenerateMonotonicWithClock creates a new monotonic UUID v7 using a custom clock source.

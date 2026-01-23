@@ -49,6 +49,7 @@ go/
 - `UUID` is a `[16]byte` array (value type, comparable, can be used as map key)
 - Methods: `String()`, `CompactString()`, `Timestamp()`, `Time()`, `Version()`, `Variant()`, `Bytes()`, `Compare()`
 - Zero value is valid (all zeros)
+- `String()` and `CompactString()` work on any UUID regardless of generation method
 
 ### Compact String Encoding
 

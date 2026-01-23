@@ -111,13 +111,6 @@ func TestUniquenessUnderHighLoad(t *testing.T) {
 	}
 }
 
-func TestNewAlias(t *testing.T) {
-	uuid := New()
-	if uuid.Version() != 7 {
-		t.Errorf("expected version 7, got %d", uuid.Version())
-	}
-}
-
 // Monotonic tests
 
 func TestMonotonicGenerateCreatesValidUUID(t *testing.T) {
@@ -245,14 +238,6 @@ func TestMonotonicResetsCounterOnNewTimestamp(t *testing.T) {
 	}
 	if uuid2.Compare(uuid3) >= 0 {
 		t.Error("uuid2 should sort before uuid3")
-	}
-}
-
-func TestNewMonotonicAlias(t *testing.T) {
-	ResetMonotonicState()
-	uuid := NewMonotonic()
-	if uuid.Version() != 7 {
-		t.Errorf("expected version 7, got %d", uuid.Version())
 	}
 }
 

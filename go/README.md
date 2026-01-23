@@ -14,8 +14,10 @@ A high-performance UUID v7 implementation for Go following [RFC 9562](https://ww
 ## Installation
 
 ```bash
-go get github.com/block/uuidv7
+go get github.com/block/uuidv7/go
 ```
+
+> **Note**: This package lives in the `go/` subdirectory of the monorepo, so the import path includes `/go`.
 
 ## Quick Start
 
@@ -39,7 +41,17 @@ func main() {
     // Monotonic variant for strict ordering
     orderedID := uuidv7.GenerateMonotonic()
     fmt.Println(orderedID.String())
+    fmt.Println(orderedID.CompactString())  // Works on any UUID!
 }
+```
+
+**Note**: `String()` and `CompactString()` work on any UUID regardless of how it was generated. The difference between `Generate()` and `GenerateMonotonic()` is only about ordering guarantees during generation—the resulting UUID type is the same.
+
+```go
+// All UUIDs support both output formats
+uuid := uuidv7.Generate()           // or GenerateMonotonic()
+uuid.String()                       // "01936a7e-5c1d-7abc-..."
+uuid.CompactString()                // "01JDQYZ9M6K7..."
 ```
 
 ## API Reference
@@ -49,11 +61,9 @@ func main() {
 ```go
 // Standard generation (high performance, no ordering guarantees)
 uuid := uuidv7.Generate()
-uuid := uuidv7.New()  // alias
 
 // Monotonic generation (strict ordering, synchronized)
 uuid := uuidv7.GenerateMonotonic()
-uuid := uuidv7.NewMonotonic()  // alias
 
 // With custom clock (useful for testing)
 uuid := uuidv7.GenerateWithClock(func() int64 { return time.Now().UnixMilli() })
@@ -162,7 +172,20 @@ decoded, _ := uuidv7.FromCompactString(compact)
 
 ## Benchmarks
 
-Run benchmarks with:
+```
+goos: darwin
+goarch: arm64
+cpu: Apple M4 Max
+BenchmarkGenerate-16                     36503178        32.81 ns/op       0 B/op    0 allocs/op
+BenchmarkGenerateMonotonic-16             2434989       480.4 ns/op        0 B/op    0 allocs/op
+BenchmarkToCompactString-16               3033646       389.2 ns/op      240 B/op   23 allocs/op
+BenchmarkFromCompactString-16             3429414       340.9 ns/op       72 B/op    3 allocs/op
+BenchmarkGenerateCompactString-16         2738077       437.8 ns/op      238 B/op   22 allocs/op
+BenchmarkGenerateParallel-16             23659772        60.59 ns/op       0 B/op    0 allocs/op
+BenchmarkGenerateMonotonicParallel-16     2377994       491.0 ns/op        0 B/op    0 allocs/op
+```
+
+Run benchmarks yourself:
 
 ```bash
 go test -bench=. -benchmem
