@@ -7,10 +7,10 @@ This is a multi-language monorepo for UUID v7 implementations.
 ```
 /
 ├── java/         # Java implementation (stable)
+├── swift/        # Swift implementation (stable)
 ├── ruby/         # Ruby implementation (planned)
 ├── go/           # Go implementation (planned)
 ├── javascript/   # JavaScript implementation (planned)
-├── swift/        # Swift implementation (planned)
 ├── README.md     # Multi-language overview
 └── AGENTS.md     # This file
 ```
@@ -20,10 +20,10 @@ This is a multi-language monorepo for UUID v7 implementations.
 Each language has its own AGENTS.md with implementation details:
 
 - **Java**: [java/AGENTS.md](java/AGENTS.md)
+- **Swift**: [swift/AGENTS.md](swift/AGENTS.md)
 - **Ruby**: Coming soon
 - **Go**: Coming soon
 - **JavaScript**: Coming soon
-- **Swift**: Coming soon
 
 ## Shared Implementation Principles
 
