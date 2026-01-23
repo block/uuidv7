@@ -57,6 +57,8 @@ const isValid = UUIDv7.isValid(uuid); // => true
 
 ### Compact String Format
 
+The compact format is ideal when storing UUIDs as regular strings in databases without native UUID support (e.g., DynamoDB, Redis, SQLite, or any system using VARCHAR/TEXT columns). Since the 128-bit UUID is encoded as a big-endian Base62 string, **lexicographic string sorting equals chronological sorting** - meaning `ORDER BY id` in SQL or alphabetical sorting in any system will return records in time order.
+
 ```typescript
 import { UUIDv7 } from '@block/uuidv7';
 
@@ -70,6 +72,11 @@ const compact = UUIDv7.toCompactString(uuid);
 
 // Convert compact string back to UUID
 const fromCompact = UUIDv7.fromCompactString(compact);
+
+// Lexicographic sorting = chronological sorting
+const earlier = UUIDv7.generateCompactString(() => 1000);
+const later = UUIDv7.generateCompactString(() => 2000);
+console.log(earlier < later); // => true (string comparison works!)
 ```
 
 ### Next.js Usage
@@ -156,6 +163,16 @@ UUID v7 follows RFC 9562:
 - Can generate up to 4096 UUIDs per millisecond before waiting
 - Uses `crypto.getRandomValues()` for counter initialization when available
 - Best for: Database primary keys, audit logs
+
+### Compact String Encoding
+
+The compact format encodes the full 128-bit UUID as a 22-character Base62 string using the alphabet `0-9A-Za-z`. The encoding is big-endian, meaning the most significant bits (containing the timestamp) are encoded first. This ensures that:
+
+1. **Earlier UUIDs produce lexicographically smaller strings** - string comparison (`<`, `>`, `localeCompare`) works for time ordering
+2. **Database `ORDER BY` works correctly** - no special UUID type or function needed
+3. **Indexes are smaller** - 22 bytes vs 36 bytes for hyphenated format
+
+Use compact strings when your database stores IDs as strings (VARCHAR, TEXT, DynamoDB partition keys, Redis keys, etc.) rather than native UUID types.
 
 ## License
 
