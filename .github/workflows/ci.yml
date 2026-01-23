@@ -21,10 +21,12 @@ jobs:
         cache: gradle
     
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: chmod +x java/gradlew
     
     - name: Build with Gradle
       run: ./gradlew build
+      working-directory: java
     
     - name: Run tests
       run: ./gradlew test
+      working-directory: java
