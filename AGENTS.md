@@ -10,7 +10,7 @@ This is a multi-language monorepo for UUID v7 implementations.
 ├── javascript/   # JavaScript/TypeScript implementation (stable)
 ├── swift/        # Swift implementation (stable)
 ├── go/           # Go implementation (stable)
-├── ruby/         # Ruby implementation (planned)
+├── ruby/         # Ruby implementation (stable)
 ├── README.md     # Multi-language overview
 └── AGENTS.md     # This file
 ```
@@ -23,7 +23,7 @@ Each language has its own AGENTS.md with implementation details:
 - **JavaScript**: [javascript/AGENTS.md](javascript/AGENTS.md)
 - **Swift**: [swift/AGENTS.md](swift/AGENTS.md)
 - **Go**: [go/AGENTS.md](go/AGENTS.md)
-- **Ruby**: Coming soon
+- **Ruby**: [ruby/AGENTS.md](ruby/AGENTS.md)
 
 ## Shared Implementation Principles
 
