@@ -31,10 +31,10 @@ Use compact strings for wire formats, database text fields, URLs, and API respon
 | Language | Status | Directory | Package |
 |----------|--------|-----------|---------|
 | **Java** | ✅ Stable | [java/](java/) | `xyz.block:uuidv7` |
-| **Ruby** | 🚧 Planned | [ruby/](ruby/) | - |
-| **Go** | 🚧 Planned | [go/](go/) | - |
-| **JavaScript** | 🚧 Planned | [javascript/](javascript/) | - |
-| **Swift** | 🚧 Planned | [swift/](swift/) | - |
+| **JavaScript** | ✅ Stable | [javascript/](javascript/) | `@block/uuidv7` |
+| **Swift** | ✅ Stable | [swift/](swift/) | `uuidv7` |
+| **Go** | ✅ Stable | [go/](go/) | `github.com/block/uuidv7` |
+| **Ruby** | ✅ Stable | [ruby/](ruby/) | `uuidv7` |
 
 ## Design Principles
 
@@ -66,10 +66,10 @@ UUID v7 follows RFC 9562:
 See the README in each language directory for installation and usage:
 
 - **Java**: [java/README.md](java/README.md)
-- **Ruby**: Coming soon
-- **Go**: Coming soon
-- **JavaScript**: Coming soon
-- **Swift**: Coming soon
+- **JavaScript**: [javascript/README.md](javascript/README.md)
+- **Swift**: [swift/README.md](swift/README.md)
+- **Go**: [go/README.md](go/README.md)
+- **Ruby**: [ruby/README.md](ruby/README.md)
 
 ## Project Resources
 

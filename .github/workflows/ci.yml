@@ -32,6 +32,34 @@ jobs:
       run: ./gradlew test
       working-directory: java
 
+  javascript:
+    name: JavaScript
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Install dependencies
+      run: npm install
+      working-directory: javascript
+    
+    - name: Type check
+      run: npm run typecheck
+      working-directory: javascript
+    
+    - name: Build
+      run: npm run build
+      working-directory: javascript
+    
+    - name: Run tests
+      run: npm test
+      working-directory: javascript
+
   ruby:
     name: Ruby
     runs-on: ubuntu-latest
