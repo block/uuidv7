@@ -32,9 +32,9 @@ Use compact strings for wire formats, database text fields, URLs, and API respon
 |----------|--------|-----------|---------|
 | **Java** | ✅ Stable | [java/](java/) | `xyz.block:uuidv7` |
 | **JavaScript** | ✅ Stable | [javascript/](javascript/) | `@block/uuidv7` |
-| **Ruby** | 🚧 Planned | [ruby/](ruby/) | - |
-| **Go** | 🚧 Planned | [go/](go/) | - |
-| **Swift** | 🚧 Planned | [swift/](swift/) | - |
+| **Swift** | ✅ Stable | [swift/](swift/) | `uuidv7` |
+| **Go** | ✅ Stable | [go/](go/) | `github.com/block/uuidv7` |
+| **Ruby** | ✅ Stable | [ruby/](ruby/) | `uuidv7` |
 
 ## Design Principles
 
@@ -67,9 +67,9 @@ See the README in each language directory for installation and usage:
 
 - **Java**: [java/README.md](java/README.md)
 - **JavaScript**: [javascript/README.md](javascript/README.md)
-- **Ruby**: Coming soon
-- **Go**: Coming soon
-- **Swift**: Coming soon
+- **Swift**: [swift/README.md](swift/README.md)
+- **Go**: [go/README.md](go/README.md)
+- **Ruby**: [ruby/README.md](ruby/README.md)
 
 ## Project Resources
 
