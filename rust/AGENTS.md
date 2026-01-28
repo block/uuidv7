@@ -91,9 +91,9 @@ RUSTFLAGS="-Z sanitizer=thread" cargo +nightly test
 
 ## Dependencies
 
-- `rand` (0.8): Fast random number generation via `thread_rng()`
-- `getrandom` (0.2): Cryptographically secure random for counter initialization
-- `criterion` (dev): Benchmarking framework
+- `rand` (0.9): Fast random number generation via `thread_rng()`
+- `getrandom` (0.3): Cryptographically secure random for counter initialization
+- `criterion` (0.8, dev): Benchmarking framework
 
 ## Further Reading
 

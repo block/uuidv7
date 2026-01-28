@@ -35,7 +35,7 @@ Use compact strings for wire formats, database text fields, URLs, and API respon
 | **Swift** | ✅ Stable | [swift/](swift/) | `uuidv7` |
 | **Go** | ✅ Stable | [go/](go/) | `github.com/block/uuidv7` |
 | **Ruby** | ✅ Stable | [ruby/](ruby/) | `uuidv7` |
-| **Rust** | ✅ Stable | [rust/](rust/) | `uuidv7` |
+| **Rust** | ✅ Stable | [rust/](rust/) | `block-uuidv7` |
 
 ## Design Principles
 

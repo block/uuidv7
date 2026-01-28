@@ -93,9 +93,9 @@ pub fn generate() -> Uuid {
 /// Useful for testing or specialized use cases where you need control over the timestamp.
 pub fn generate_with_clock<C: Clock>(clock: C) -> Uuid {
     let timestamp = clock();
-    let mut rng = rand::thread_rng();
-    let rand_a = rng.gen_range(0..4096u16);
-    let rand_b = rng.r#gen::<u64>();
+    let mut rng = rand::rng();
+    let rand_a = rng.random_range(0..4096u16);
+    let rand_b = rng.random::<u64>();
     build(timestamp, rand_a, rand_b)
 }
 
@@ -137,13 +137,13 @@ pub fn generate_monotonic_with_clock<C: Clock>(clock: C) -> Uuid {
         state.timestamp = timestamp;
     }
 
-    let rand_b = rand::thread_rng().r#gen::<u64>();
+    let rand_b = rand::rng().random::<u64>();
     build(timestamp, counter_value, rand_b)
 }
 
 fn secure_random_counter() -> u16 {
     let mut buf = [0u8; 2];
-    getrandom::getrandom(&mut buf).expect("Failed to get random bytes");
+    getrandom::fill(&mut buf).expect("Failed to get random bytes");
     u16::from_be_bytes(buf) & COUNTER_MAX
 }
 

@@ -11,11 +11,11 @@ categories = ["data-structures", "no-std"]
 readme = "README.md"
 
 [dependencies]
-rand = "0.8"
-getrandom = { version = "0.2", features = ["std"] }
+rand = "0.9"
+getrandom = "0.3"
 
 [dev-dependencies]
-criterion = "0.5"
+criterion = "0.8"
 
 [[bench]]
 name = "benchmarks"

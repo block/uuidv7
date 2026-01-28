@@ -16,7 +16,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-uuidv7 = "0.1"
+block-uuidv7 = "0.1"
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ uuidv7 = "0.1"
 ### Basic Generation
 
 ```rust
-use uuidv7::{generate, Uuid};
+use block_uuidv7::{generate, Uuid};
 
 // Generate a UUID v7
 let uuid = generate();
@@ -39,7 +39,7 @@ let uuid = Uuid::new();
 For scenarios requiring strict ordering within the same millisecond (database primary keys, audit logs):
 
 ```rust
-use uuidv7::{generate_monotonic, Uuid};
+use block_uuidv7::{generate_monotonic, Uuid};
 
 let uuid1 = generate_monotonic();
 let uuid2 = generate_monotonic();
@@ -54,7 +54,7 @@ let uuid = Uuid::new_monotonic();
 22-character Base62 encoded strings that are URL-safe and preserve lexicographic ordering:
 
 ```rust
-use uuidv7::{generate, generate_compact_string, from_compact_string};
+use block_uuidv7::{generate, generate_compact_string, from_compact_string};
 
 // Generate directly as compact string
 let compact = generate_compact_string();
@@ -72,7 +72,7 @@ assert_eq!(uuid, parsed);
 ### Timestamp Extraction
 
 ```rust
-use uuidv7::generate;
+use block_uuidv7::generate;
 
 let uuid = generate();
 
@@ -90,7 +90,7 @@ if let Some(time) = uuid.time() {
 ### Parsing and Conversion
 
 ```rust
-use uuidv7::{from_string, from_compact_string, Uuid};
+use block_uuidv7::{from_string, from_compact_string, Uuid};
 
 // Parse standard UUID string
 let uuid = from_string("01902c74-5e82-7def-8a12-3456789abcde").unwrap();
@@ -111,7 +111,7 @@ let uuid = Uuid::from_slice(&[0u8; 16]).unwrap();
 For testing or specialized use cases:
 
 ```rust
-use uuidv7::{generate_with_clock, generate_monotonic_with_clock};
+use block_uuidv7::{generate_with_clock, generate_monotonic_with_clock};
 
 let fixed_time = 1234567890000i64;
 let uuid = generate_with_clock(|| fixed_time);
