@@ -33,7 +33,7 @@ Use compact strings for wire formats, database text fields, URLs, and API respon
 | **Java** | ✅ Stable | [java/](java/) | `xyz.block:uuidv7` |
 | **JavaScript** | ✅ Stable | [javascript/](javascript/) | `@block/uuidv7` |
 | **Swift** | ✅ Stable | [swift/](swift/) | `uuidv7` |
-| **Go** | ✅ Stable | [go/](go/) | `github.com/block/uuidv7` |
+| **Go** | ✅ Stable | [go/](go/) | `github.com/block/uuidv7/go` |
 | **Ruby** | ✅ Stable | [ruby/](ruby/) | `uuidv7` |
 
 ## Design Principles
