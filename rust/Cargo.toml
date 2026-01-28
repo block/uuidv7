@@ -1,7 +1,7 @@
 [package]
-name = "uuidv7"
+name = "block-uuidv7"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 authors = ["Block, Inc."]
 license = "Apache-2.0"
 description = "High-performance UUID v7 generation with optional monotonic ordering"

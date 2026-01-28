@@ -11,7 +11,7 @@
 //! # Examples
 //!
 //! ```
-//! use uuidv7::{generate, generate_monotonic, Uuid};
+//! use block_uuidv7::{generate, generate_monotonic, Uuid};
 //!
 //! // High-performance generation (no ordering guarantees within same ms)
 //! let uuid = generate();
@@ -95,7 +95,7 @@ pub fn generate_with_clock<C: Clock>(clock: C) -> Uuid {
     let timestamp = clock();
     let mut rng = rand::thread_rng();
     let rand_a = rng.gen_range(0..4096u16);
-    let rand_b = rng.gen::<u64>();
+    let rand_b = rng.r#gen::<u64>();
     build(timestamp, rand_a, rand_b)
 }
 
@@ -137,7 +137,7 @@ pub fn generate_monotonic_with_clock<C: Clock>(clock: C) -> Uuid {
         state.timestamp = timestamp;
     }
 
-    let rand_b = rand::thread_rng().gen::<u64>();
+    let rand_b = rand::thread_rng().r#gen::<u64>();
     build(timestamp, counter_value, rand_b)
 }
 

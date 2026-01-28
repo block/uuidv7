@@ -6,7 +6,8 @@ For the multi-language overview, see [root AGENTS.md](../AGENTS.md).
 
 ```bash
 cd rust
-cargo build           # Build package
+cargo build           # Build package (debug mode)
+cargo build --release # Build package (release mode)
 cargo test            # Run tests
 cargo test -- --nocapture  # Run tests with output
 cargo bench           # Run benchmarks
@@ -16,7 +17,7 @@ cargo fmt             # Format code
 
 ## Prerequisites
 
-- Rust 1.70 or later (2021 edition)
+- Rust 1.85 or later (2024 edition)
 - Cargo (included with Rust)
 
 ## Project Structure
