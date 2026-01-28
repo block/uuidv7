@@ -1,0 +1,22 @@
+[package]
+name = "uuidv7"
+version = "0.1.0"
+edition = "2021"
+authors = ["Block, Inc."]
+license = "Apache-2.0"
+description = "High-performance UUID v7 generation with optional monotonic ordering"
+repository = "https://github.com/block/uuidv7"
+keywords = ["uuid", "uuid7", "identifier", "unique"]
+categories = ["data-structures", "no-std"]
+readme = "README.md"
+
+[dependencies]
+rand = "0.8"
+getrandom = { version = "0.2", features = ["std"] }
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "benchmarks"
+harness = false
