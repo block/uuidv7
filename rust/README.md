@@ -58,7 +58,7 @@ use block_uuidv7::{generate, generate_compact_string, from_compact_string};
 
 // Generate directly as compact string
 let compact = generate_compact_string();
-println!("{}", compact);  // e.g., "0DXz5QpL3kF8N2M1R4Y6W"
+println!("{}", compact);  // e.g., "0DXz5QpL3kF8N2M1R4Y6Wb"
 
 // Convert existing UUID
 let uuid = generate();
