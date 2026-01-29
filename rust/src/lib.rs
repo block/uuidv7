@@ -107,6 +107,11 @@ pub fn generate_with_clock<C: Clock>(clock: C) -> Uuid {
 ///
 /// This function is synchronized and best suited for database primary keys and scenarios
 /// requiring guaranteed sequential ordering.
+///
+/// # Panics
+///
+/// Panics if the system's random number generator is unavailable. This is extremely rare
+/// and typically indicates a critical system failure.
 pub fn generate_monotonic() -> Uuid {
     generate_monotonic_with_clock(default_clock)
 }
@@ -116,6 +121,11 @@ pub fn generate_monotonic() -> Uuid {
 /// This function ensures that UUIDs generated within the same millisecond are strictly
 /// ordered by incrementing a counter. Useful for testing monotonic behavior with
 /// controlled clock sources.
+///
+/// # Panics
+///
+/// Panics if the system's random number generator is unavailable. This is extremely rare
+/// and typically indicates a critical system failure.
 pub fn generate_monotonic_with_clock<C: Clock>(clock: C) -> Uuid {
     let mut state = MONOTONIC_STATE.lock().unwrap();
     let mut timestamp = clock();
@@ -250,11 +260,22 @@ impl Uuid {
     fn format_string(&self) -> String {
         format!(
             "{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}",
-            self.0[0], self.0[1], self.0[2], self.0[3],
-            self.0[4], self.0[5],
-            self.0[6], self.0[7],
-            self.0[8], self.0[9],
-            self.0[10], self.0[11], self.0[12], self.0[13], self.0[14], self.0[15]
+            self.0[0],
+            self.0[1],
+            self.0[2],
+            self.0[3],
+            self.0[4],
+            self.0[5],
+            self.0[6],
+            self.0[7],
+            self.0[8],
+            self.0[9],
+            self.0[10],
+            self.0[11],
+            self.0[12],
+            self.0[13],
+            self.0[14],
+            self.0[15]
         )
     }
 

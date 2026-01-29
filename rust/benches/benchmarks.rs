@@ -1,4 +1,4 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use uuidv7::{
     from_compact_string, generate, generate_compact_string, generate_monotonic,
     reset_monotonic_state, to_compact_string,
