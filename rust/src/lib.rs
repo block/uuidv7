@@ -687,7 +687,7 @@ mod tests {
     }
 
     #[test]
-    fn test_from_string_invalid_format() {
+    fn test_from_string_without_hyphens_invalid_length() {
         let result = from_string("01234567089ab07def080120345678abcde");
         assert!(matches!(result, Err(ParseError::InvalidLength { .. })));
     }
