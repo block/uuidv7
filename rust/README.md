@@ -58,7 +58,7 @@ use block_uuidv7::{generate, generate_compact_string, from_compact_string};
 
 // Generate directly as compact string
 let compact = generate_compact_string();
-println!("{}", compact);  // e.g., "0DXz5QpL3kF8N2M1R4Y6Wb"
+println!("{}", compact);  // e.g., "01JDQYZ9M6K7TCJK2F3W8N"
 
 // Convert existing UUID
 let uuid = generate();
@@ -99,7 +99,7 @@ let uuid = from_string("01902c74-5e82-7def-8a12-3456789abcde").unwrap();
 let uuid: Uuid = "01902c74-5e82-7def-8a12-3456789abcde".parse().unwrap();
 
 // Parse compact string
-let uuid = from_compact_string("0DXz5QpL3kF8N2M1R4Y6W").unwrap();
+let uuid = from_compact_string("01JDQYZ9M6K7TCJK2F3W8N").unwrap();
 
 // From bytes
 let uuid = Uuid::from_bytes([0u8; 16]);
