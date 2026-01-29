@@ -7,7 +7,7 @@ license = "Apache-2.0"
 description = "High-performance UUID v7 generation with optional monotonic ordering"
 repository = "https://github.com/block/uuidv7"
 keywords = ["uuid", "uuid7", "identifier", "unique"]
-categories = ["data-structures", "no-std"]
+categories = ["data-structures"]
 readme = "README.md"
 
 [dependencies]
