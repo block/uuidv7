@@ -12,6 +12,10 @@ Gemfile.lock
 # Go
 go.sum
 
+# Rust
+target/
+Cargo.lock
+
 # JavaScript / Node
 node_modules/
 dist/

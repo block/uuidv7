@@ -11,6 +11,7 @@ This is a multi-language monorepo for UUID v7 implementations.
 ├── swift/        # Swift implementation (stable)
 ├── go/           # Go implementation (stable)
 ├── ruby/         # Ruby implementation (stable)
+├── rust/         # Rust implementation (stable)
 ├── README.md     # Multi-language overview
 └── AGENTS.md     # This file
 ```
@@ -24,6 +25,7 @@ Each language has its own AGENTS.md with implementation details:
 - **Swift**: [swift/AGENTS.md](swift/AGENTS.md)
 - **Go**: [go/AGENTS.md](go/AGENTS.md)
 - **Ruby**: [ruby/AGENTS.md](ruby/AGENTS.md)
+- **Rust**: [rust/AGENTS.md](rust/AGENTS.md)
 
 ## Shared Implementation Principles
 
