@@ -121,13 +121,16 @@ pub fn generate_monotonic_with_clock<C: Clock>(clock: C) -> Uuid {
     let mut timestamp = clock();
     let counter_value: u16;
 
-    if timestamp == state.timestamp {
+    if timestamp <= state.timestamp {
+        // Same millisecond or clock went backward - clamp to maintain monotonicity
+        timestamp = state.timestamp;
         state.counter = (state.counter + 1) & COUNTER_MAX;
 
         if state.counter == 0 {
-            while timestamp == state.timestamp {
+            while timestamp <= state.timestamp {
                 timestamp = clock();
             }
+            state.timestamp = timestamp;
             state.counter = secure_random_counter();
         }
         counter_value = state.counter;
@@ -560,6 +563,36 @@ mod tests {
         for i in 0..uuids.len() - 1 {
             assert!(uuids[i] < uuids[i + 1]);
         }
+    }
+
+    #[test]
+    fn test_monotonic_handles_backward_clock() {
+        let _guard = MONOTONIC_TEST_MUTEX.lock().unwrap();
+        reset_monotonic_state();
+        let high_time = 2000000000000i64;
+        let low_time = 1000000000000i64;
+        let time = AtomicI64::new(high_time);
+
+        // Generate at a high timestamp
+        let uuid1 = generate_monotonic_with_clock(|| time.load(Ordering::SeqCst));
+        let uuid2 = generate_monotonic_with_clock(|| time.load(Ordering::SeqCst));
+
+        // Move clock backward
+        time.store(low_time, Ordering::SeqCst);
+        let uuid3 = generate_monotonic_with_clock(|| time.load(Ordering::SeqCst));
+
+        // Timestamp should be clamped to the original value
+        assert!(
+            uuid3.timestamp().unwrap() >= uuid1.timestamp().unwrap(),
+            "backward clock should clamp timestamp"
+        );
+
+        // Monotonic ordering must be maintained
+        assert!(uuid1 < uuid2, "uuid1 should sort before uuid2");
+        assert!(
+            uuid2 < uuid3,
+            "uuid2 should sort before uuid3 despite backward clock"
+        );
     }
 
     // Compact string tests

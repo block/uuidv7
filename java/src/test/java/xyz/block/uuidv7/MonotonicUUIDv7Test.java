@@ -1,5 +1,6 @@
 package xyz.block.uuidv7;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.UUID;
 import java.util.HashSet;
@@ -11,6 +12,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MonotonicUUIDv7Test {
+
+    @BeforeEach
+    void resetMonotonicState() {
+        MonotonicUUIDv7.resetState();
+    }
 
     @Test
     void generateCreatesValidUuid() {
@@ -176,6 +182,32 @@ class MonotonicUUIDv7Test {
         // uuid3 should sort after uuid1 and uuid2
         assertThat(uuid1.compareTo(uuid3)).isLessThan(0);
         assertThat(uuid2.compareTo(uuid3)).isLessThan(0);
+    }
+
+    @Test
+    void generateHandlesBackwardClock() {
+        long highTime = 2000000000000L;
+        long lowTime = 1000000000000L;
+
+        // Generate at a high timestamp
+        UUID uuid1 = MonotonicUUIDv7.generate(() -> highTime);
+        UUID uuid2 = MonotonicUUIDv7.generate(() -> highTime);
+
+        // Move clock backward
+        UUID uuid3 = MonotonicUUIDv7.generate(() -> lowTime);
+
+        // Timestamp should be clamped to the original value
+        assertThat(UUIDv7.getTimestamp(uuid3))
+            .as("Backward clock should clamp timestamp")
+            .isGreaterThanOrEqualTo(UUIDv7.getTimestamp(uuid1));
+
+        // Monotonic ordering must be maintained
+        assertThat(uuid1.compareTo(uuid2))
+            .as("uuid1 should sort before uuid2")
+            .isLessThan(0);
+        assertThat(uuid2.compareTo(uuid3))
+            .as("uuid2 should sort before uuid3 despite backward clock")
+            .isLessThan(0);
     }
 
     @Test

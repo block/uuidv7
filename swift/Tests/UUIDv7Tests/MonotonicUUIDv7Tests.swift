@@ -145,6 +145,31 @@ final class MonotonicUUIDv7Tests: XCTestCase {
         XCTAssertLessThan(uuid2, uuid3)
     }
     
+    func testGenerateHandlesBackwardClock() {
+        let highTime: UInt64 = 2000000000000
+        let lowTime: UInt64 = 1000000000000
+        var timestamp = highTime
+
+        // Generate at a high timestamp
+        let uuid1 = generator.generate(clock: { timestamp })
+        let uuid2 = generator.generate(clock: { timestamp })
+
+        // Move clock backward
+        timestamp = lowTime
+        let uuid3 = generator.generate(clock: { timestamp })
+
+        // Timestamp should be clamped to the original value
+        XCTAssertGreaterThanOrEqual(
+            try! UUIDv7.getTimestamp(uuid3),
+            try! UUIDv7.getTimestamp(uuid1),
+            "Backward clock should clamp timestamp"
+        )
+
+        // Monotonic ordering must be maintained
+        XCTAssertLessThan(uuid1, uuid2, "uuid1 should sort before uuid2")
+        XCTAssertLessThan(uuid2, uuid3, "uuid2 should sort before uuid3 despite backward clock")
+    }
+
     func testUniquenessUnderHighLoad() {
         var timestamp: UInt64 = 1234567890000
         var uuids = Set<UUID>()

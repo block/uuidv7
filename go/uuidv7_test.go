@@ -241,6 +241,47 @@ func TestMonotonicResetsCounterOnNewTimestamp(t *testing.T) {
 	}
 }
 
+func TestMonotonicHandlesBackwardClock(t *testing.T) {
+	ResetMonotonicState()
+	timestamp := int64(2000000000000)
+	var mu sync.Mutex
+
+	clock := func() int64 {
+		mu.Lock()
+		defer mu.Unlock()
+		return timestamp
+	}
+
+	setClock := func(ts int64) {
+		mu.Lock()
+		defer mu.Unlock()
+		timestamp = ts
+	}
+
+	// Generate at a high timestamp
+	uuid1 := GenerateMonotonicWithClock(clock)
+	uuid2 := GenerateMonotonicWithClock(clock)
+
+	// Move clock backward
+	setClock(1000000000000)
+	uuid3 := GenerateMonotonicWithClock(clock)
+
+	// Timestamp should be clamped to the original value
+	ts1, _ := uuid1.Timestamp()
+	ts3, _ := uuid3.Timestamp()
+	if ts3 < ts1 {
+		t.Errorf("backward clock should clamp timestamp: got %d, want >= %d", ts3, ts1)
+	}
+
+	// Monotonic ordering must be maintained
+	if uuid1.Compare(uuid2) >= 0 {
+		t.Error("uuid1 should sort before uuid2")
+	}
+	if uuid2.Compare(uuid3) >= 0 {
+		t.Error("uuid2 should sort before uuid3 despite backward clock")
+	}
+}
+
 // Compact string tests
 
 func TestCompactStringProducesFixedLength(t *testing.T) {

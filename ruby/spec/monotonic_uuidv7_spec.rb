@@ -56,6 +56,25 @@ RSpec.describe MonotonicUUIDv7 do
       expect(uuids).to eq(uuids.sort)
     end
 
+    it 'handles backward clock and maintains ordering' do
+      high_time = 2_000_000_000_000
+      low_time = 1_000_000_000_000
+
+      # Generate at a high timestamp
+      uuid1 = described_class.generate { high_time }
+      uuid2 = described_class.generate { high_time }
+
+      # Move clock backward
+      uuid3 = described_class.generate { low_time }
+
+      # Timestamp should be clamped
+      expect(UUIDv7.timestamp(uuid3)).to be >= UUIDv7.timestamp(uuid1)
+
+      # Monotonic ordering must be maintained
+      expect(uuid1).to be < uuid2
+      expect(uuid2).to be < uuid3
+    end
+
     it 'accepts a custom clock block' do
       fixed_time = 1_700_000_000_000
       uuid = described_class.generate { fixed_time }

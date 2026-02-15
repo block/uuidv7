@@ -61,13 +61,16 @@ export function generate(clock: Clock = Date.now): string {
   let timestamp = clock();
   let counterValue: number;
 
-  if (timestamp === lastTimestamp) {
+  if (timestamp <= lastTimestamp) {
+    // Same millisecond or clock went backward - clamp to maintain monotonicity
+    timestamp = lastTimestamp;
     counter = (counter + 1) & COUNTER_MAX;
 
     if (counter === 0) {
-      while (timestamp === lastTimestamp) {
+      while (timestamp <= lastTimestamp) {
         timestamp = clock();
       }
+      lastTimestamp = timestamp;
       counter = cryptoRandomInt(COUNTER_MAX + 1);
     }
     counterValue = counter;
