@@ -34,6 +34,14 @@ public final class MonotonicUUIDv7 {
     }
 
     /**
+     * Resets internal monotonic state. Package-private for testing.
+     */
+    static synchronized void resetState() {
+        lastTimestamp = 0L;
+        counter = 0;
+    }
+
+    /**
      * Generates a new monotonic UUID v7 using the current system time.
      * <p>
      * This method ensures that UUIDs generated within the same millisecond are strictly
@@ -66,17 +74,19 @@ public final class MonotonicUUIDv7 {
         long timestamp = clock.getAsLong();
         int counterValue;
 
-        if (timestamp == lastTimestamp) {
-            // Same millisecond - increment counter
+        if (timestamp <= lastTimestamp) {
+            // Same millisecond or clock went backward - clamp and increment counter
+            timestamp = lastTimestamp;
             counter = (counter + 1) & COUNTER_MAX;
 
             if (counter == 0) {
                 // Counter overflow - wait for next millisecond to maintain uniqueness
                 do {
                     timestamp = clock.getAsLong();
-                } while (timestamp == lastTimestamp);
+                } while (timestamp <= lastTimestamp);
 
-                // New millisecond - start with random counter value
+                // New millisecond - update state and start with random counter value
+                lastTimestamp = timestamp;
                 counter = SECURE_RANDOM.nextInt(COUNTER_MAX + 1);
             }
             counterValue = counter;

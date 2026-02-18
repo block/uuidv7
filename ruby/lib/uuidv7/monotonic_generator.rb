@@ -16,16 +16,19 @@ module UUIDv7
           timestamp = clock ? clock.call : (Time.now.to_f * 1000).to_i
           counter_value = nil
 
-          if timestamp == @last_timestamp
+          if timestamp <= @last_timestamp
+            # Same millisecond or clock went backward - clamp to maintain monotonicity
+            timestamp = @last_timestamp
             @counter = (@counter + 1) & COUNTER_MAX
 
             if @counter.zero?
               loop do
                 timestamp = clock ? clock.call : (Time.now.to_f * 1000).to_i
-                break if timestamp != @last_timestamp
+                break if timestamp > @last_timestamp
 
                 sleep(0.0001) unless clock
               end
+              @last_timestamp = timestamp
               @counter = SecureRandom.random_number(COUNTER_MAX + 1)
             end
             counter_value = @counter

@@ -102,16 +102,18 @@ func GenerateMonotonicWithClock(clock Clock) UUID {
 	timestamp := clock()
 	var counterValue int
 
-	if timestamp == monotonicTimestamp {
-		// Same millisecond - increment counter
+	if timestamp <= monotonicTimestamp {
+		// Same millisecond or clock went backward - clamp and increment counter
+		timestamp = monotonicTimestamp
 		monotonicCounter = (monotonicCounter + 1) & counterMax
 
 		if monotonicCounter == 0 {
 			// Counter overflow - wait for next millisecond to maintain uniqueness
-			for timestamp == monotonicTimestamp {
+			for timestamp <= monotonicTimestamp {
 				timestamp = clock()
 			}
-			// New millisecond - start with random counter value
+			// New millisecond - update state and start with random counter value
+			monotonicTimestamp = timestamp
 			monotonicCounter = secureRandomCounter()
 		}
 		counterValue = monotonicCounter

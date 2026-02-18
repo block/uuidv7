@@ -58,17 +58,19 @@ public final class MonotonicUUIDv7: @unchecked Sendable {
         var timestamp = clock()
         let counterValue: UInt16
         
-        if timestamp == lastTimestamp {
-            // Same millisecond - increment counter
+        if timestamp <= lastTimestamp {
+            // Same millisecond or clock went backward - clamp to maintain monotonicity
+            timestamp = lastTimestamp
             counter = (counter + 1) & Self.counterMax
             
             if counter == 0 {
                 // Counter overflow - wait for next millisecond to maintain uniqueness
                 repeat {
                     timestamp = clock()
-                } while timestamp == lastTimestamp
-                
-                // New millisecond - start with random counter value
+                } while timestamp <= lastTimestamp
+
+                // New millisecond - update state and start with random counter value
+                lastTimestamp = timestamp
                 counter = UInt16.random(in: 0...Self.counterMax)
             }
             counterValue = counter

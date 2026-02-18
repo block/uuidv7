@@ -167,6 +167,25 @@ describe('MonotonicUUIDv7', () => {
       expect(uuids).toEqual(sorted);
     });
 
+    it('should handle backward clock and maintain ordering', () => {
+      const highTime = 2000000000000;
+      const lowTime = 1000000000000;
+
+      // Generate at a high timestamp
+      const uuid1 = MonotonicUUIDv7.generate(() => highTime);
+      const uuid2 = MonotonicUUIDv7.generate(() => highTime);
+
+      // Move clock backward
+      const uuid3 = MonotonicUUIDv7.generate(() => lowTime);
+
+      // Timestamp should be clamped
+      expect(UUIDv7.getTimestamp(uuid3)).toBeGreaterThanOrEqual(UUIDv7.getTimestamp(uuid1));
+
+      // Monotonic ordering must be maintained
+      expect(uuid1.localeCompare(uuid2)).toBeLessThan(0);
+      expect(uuid2.localeCompare(uuid3)).toBeLessThan(0);
+    });
+
     it('should increment counter within same millisecond', () => {
       const fixedTime = 1704067200000;
       const uuid1 = MonotonicUUIDv7.generate(() => fixedTime);
