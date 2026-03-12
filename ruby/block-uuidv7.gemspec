@@ -3,7 +3,7 @@
 require_relative 'lib/uuidv7/version'
 
 Gem::Specification.new do |spec|
-  spec.name = 'uuidv7'
+  spec.name = 'block-uuidv7'
   spec.version = UUIDv7::VERSION
   spec.authors = ['Block, Inc.']
   spec.email = ['opensource@block.xyz']
