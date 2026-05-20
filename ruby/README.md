@@ -59,7 +59,7 @@ The encoding preserves **lexicographic ordering**: if UUID A was generated befor
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'uuidv7'
+gem 'block-uuidv7'
 ```
 
 And then execute:
@@ -71,7 +71,7 @@ bundle install
 Or install it yourself as:
 
 ```bash
-gem install uuidv7
+gem install block-uuidv7
 ```
 
 ## Usage
